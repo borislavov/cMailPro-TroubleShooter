@@ -26,7 +26,6 @@ cMailPro::TroubleShooter::Controller::Root - Root Controller for cMailPro::Troub
 
 sub begin :Private {
     my ( $self, $c ) = @_;
-    $self->{cg_cli} = $c->model("CommuniGate::CLI");
 }
 
 =head2 index
@@ -61,7 +60,23 @@ Attempt to render a view, if needed.
 =cut
 
 sub end : ActionClass('RenderView') {
-    my ( $self, $c ) = @_;
+    my ( $self, $c, $args ) = @_;
+
+    if ( $args->{cg_command_error} ) {
+	$c->response->status(500);
+	$c->stash->{error_msg} = [ $args->{cg_cli}->getErrMessage ];
+	$c->stash->{status_msg} = ["Internal Server Error: Unable to execute CommuniGate commad ". $args->{cg_cli}->getErrCommand ];
+
+	$c->log->debug("CommuniGate connection error: ", $args->{cg_cli}->getErrMessage);
+    }
+
+    if ( $args->{cg_connection_error} ) {
+	$c->response->status(500);
+	$c->stash->{error_msg} = [ "Unable to create CommuniGate connection channel." ];
+	$c->stash->{status_msg} = [ "Internal Server Error: Unable to connect to the CommuniGate server." ];
+
+	$c->log->debug("CommuniGate connection error. ");
+    }
 
     $c->model("CommuniGate::CLI")->logout();
 }

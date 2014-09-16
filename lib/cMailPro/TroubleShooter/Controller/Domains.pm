@@ -17,35 +17,6 @@ Catalyst Controller.
 
 =cut
 
-
-=head2 init_cg_cli 
-
-=cut
-
-sub cg_connection_error :Private {
-    my ( $self, $c ) = @_;
-
-    $c->response->status(500);
-    $c->stash->{error_msg} = "Unable to create CommuniGate connection";
-    $c->stash->{status_msg} = "Internal Server Error: Unable to execute CommuniGate commad ListDomains";
-    $c->log->debug("CommuniGate connection error. ");
-    $c->detach( $c->view('HTML'));
-}
-
-=head2 cg_command_error 
-
-=cut
-
-sub cg_command_error :Private {
-    my ( $self, $c, $cg_cli ) = @_;
-
-    $c->response->status(500);
-    $c->stash->{error_msg} = $cg_cli->getErrMessage;
-    $c->stash->{status_msg} = "Internal Server Error: Unable to execute CommuniGate commad ", $cg_cli->getErrCommand;
-    $c->log->debug("CommuniGate connection error: ", $cg_cli->getErrMessage);
-    $c->detach( $c->view('HTML'));
-}
-
 =head2 index
 
 =cut
@@ -56,13 +27,23 @@ sub index :Path :Args(0) {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	$self->cg_connection_error;
+	my $args = [ { "cg_connection_error" => 1,
+		       "cg_command_error" => 0,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     my $domains = $cg_cli->ListDomains();
 
     if (!$cg_cli->isSuccess) {
-	$self->cg_command_error($cg_cli);
+	my $args = [ { "cg_connection_error" => 0,
+		       "cg_command_error" => 1,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     $c->stash->{domains} = $domains;
@@ -85,7 +66,12 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	$self->cg_connection_error;
+	my $args = [ { "cg_connection_error" => 1,
+		       "cg_command_error" => 0,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     my $domain_settings= $cg_cli->GetDomainSettings($domain);
@@ -93,7 +79,12 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
     $c->log->debug(Dumper $domain_settings);
 
     if (!$cg_cli->isSuccess) {
-	$self->cg_command_error($cg_cli);
+	my $args = [ { "cg_connection_error" => 0,
+		       "cg_command_error" => 1,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     $c->stash->{domain_settings} = $domain_settings;
@@ -120,13 +111,24 @@ sub search :LocalRegex('^search(/)*(.*)') {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	$self->cg_connection_error;
+	my $args = [ { "cg_connection_error" => 1,
+		       "cg_command_error" => 0,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     my $domains = $cg_cli->ListDomains();
 
     if (!$cg_cli->isSuccess) {
-	$self->cg_command_error($cg_cli);
+
+	my $args = [ { "cg_connection_error" => 0,
+		       "cg_command_error" => 1,
+		       "cg_cli" => $cg_cli
+	}];
+
+	$c->detach( "Root", "end", $args );
     }
 
     if (!$domain) {
