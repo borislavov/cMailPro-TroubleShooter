@@ -1,0 +1,6 @@
+Header
+[% IF error_msg %]
+<h1>ERROR</h1>
+[% ELSE %]
+<h1>[% template.title or site.title %]</h1>
+[% END %]

@@ -1,0 +1,14 @@
+<div class="domain_search">
+    <form	id="domain_search" method="post" action="[% c.uri_for('/domain/search') %]" >
+      <p>
+	<input name="domain" type="text" value="[% domain_searched or '' %]" />
+      </p>
+      <p>
+	<input type="submit"  value="search" />
+      </p>
+    </form>
+</div>
+
+[% FOR d IN domains %]
+<div class="domain"><a href="[% c.uri_for('/domains/' _ d); %]">[% d %]</a></div>
+[% END %]

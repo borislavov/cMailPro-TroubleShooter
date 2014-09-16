@@ -1,0 +1,74 @@
+<h2>Navigation</h2>
+    <input id="navigation-search" value="Type to search" />
+    <ul class="navigation-menu" id="navigation-menu" >
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Overview
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item"><a href="[% c.uri_for('/') %]">Overview/landing page</a></li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Search
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item"><a href="[%c.uri_for('/domains/search'); %]">Search by domain</a></li>
+	  <li class="navigation-item">Search by account</li>
+	  <li class="navigation-item">Search by mail account</li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Domain information
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item"><a href="[% c.uri_for('/domains');  %]" >List Domains</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/domains/search');  %]" >Search domains</a></li>
+	  <li class="navigation-item">Domain information</li>
+	  <li class="navigation-item">Edit domain</li>
+	  <li class="navigation-item">Domain accounts</li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Logs
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item">Logs overview/statistics</li>
+	  <li class="navigation-item">Realtime lgos</li>
+	  <li class="navigation-item">Logs by date</li>
+	  <li class="navigation-item">Logs by topic</li>
+	  <li class="navigation-item">Search logs</li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Limits
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item">Domain limits</li>
+	  <li class="navigation-item">Account limits</li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Mail queues
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item">View mail queue</li>
+	  <li class="navigation-item">Send all mail in the queue</li>
+	  <li class="navigation-item">Send a single mail in the queue</li>
+	  <li class="navigation-item">Remove mail from the queue</li>
+	  <li class="navigation-item">Remove all mail from the queue</li>
+	</ul>
+      </li>
+
+    </ul>

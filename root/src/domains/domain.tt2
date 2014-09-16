@@ -1,0 +1,34 @@
+<div class="domain-settings">
+<p>Domain settings for [% domain %] </p>
+<p>If a setting is missing, CG defualt/global values are used (not shown)</p>
+
+<table class="domain-settings-table" >
+<tbody>
+<tr>
+  <th>
+    Key
+  </th>
+  <th>
+    Value
+  </th>
+</tr>
+[% FOREACH s IN domain_settings.keys %]
+<tr>
+  <td>
+    [% s %]
+  </td>
+  <td>
+    [% val = domain_settings.$s %]
+    [% IF NOT val.size %]
+        [% FOR v IN val.size %]
+	[% val.$v _ ',' %]
+	[% END %]
+    [% ELSE %]
+    [%  val %]
+    [% END %]
+  </td>
+</tr>
+[% END %]
+</tbody>
+</table>
+</div>
