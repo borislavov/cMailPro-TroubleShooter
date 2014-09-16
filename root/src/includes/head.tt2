@@ -1,4 +1,5 @@
-<title>[% template.title or "cMailPro Troubleshooter" %]</title>
+[%- site_title = "cMailPro Troubleshooter" -%]
+<title>[% ( title ? title _ ":: " : '') _ site_title  %]</title>
 <meta name="Content-Type" content="text/html; charset=UTF-8" />
 <link rel="stylesheet" href="[% c.uri_for('/static/css/screen.css') %]" type="text/css" media="screen" />
 <script type="text/javascript" src="[% c.uri_for('/static/js/mootools.js') %]"></script>

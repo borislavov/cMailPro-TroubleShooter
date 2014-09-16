@@ -172,3 +172,8 @@ p {
 .domain-settings-table  td, {
     border: 1px solid red;
 }
+
+.message, .error {
+    padding: 5px;
+    margin: 5px;
+}
