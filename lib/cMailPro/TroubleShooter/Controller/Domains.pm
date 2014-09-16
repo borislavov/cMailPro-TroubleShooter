@@ -74,7 +74,7 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 	$c->detach( "Root", "end", $args );
     }
 
-    my $domain_settings= $cg_cli->GetDomainSettings($domain);
+    my $domain_settings= $cg_cli->GetDomainEffectiveSettings($domain);
 
     $c->log->debug(Dumper $domain_settings);
 

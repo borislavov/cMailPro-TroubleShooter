@@ -1,6 +1,6 @@
 <div class="domain-settings">
-<p>Domain settings for [% domain %] </p>
-<p>If a setting is missing, CG defualt/global values are used (not shown)</p>
+<p>Domain (effective) settings for: [% domain %]</p>
+
 
 <table class="domain-settings-table" >
 <tbody>
