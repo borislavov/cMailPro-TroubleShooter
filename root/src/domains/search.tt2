@@ -1,11 +1,17 @@
 <div class="domain_search">
-    <form	id="domain_search" method="post" action="[% c.uri_for('/domains/search') %]" >
+    <form id="domain_search" method="post" action="[% c.uri_for('/domains/search') %]" >
       <p>
-	<input name="domain" type="text" value="[% domain_searched or '' %]" />
+	<label for="domain-search">Search for domain</label>
+      </p>
+      <p>
+	<input id="domain-search" name="domain" type="text" value="[% domain_searched or '' %]" />
       </p>
       <p>
 	<input type="submit"  value="search" />
       </p>
+
+      <div class="clear-float" > </div>
+
     </form>
 </div>
 
