@@ -1,0 +1,21 @@
+<div class="account_search">
+    <form id="account_search" method="post" action="[% c.uri_for('/accounts/search') %]" >
+      <p>
+	<label for="account-search">Search for account</label>
+      </p>
+      <p>
+	<input id="account-search" name="account" type="text" value="[% account_searched or '' %]" />
+      </p>
+      <p>
+	<input type="submit"  value="search" />
+      </p>
+      <div class="clear-float" > </div>
+    </form>
+</div>
+
+[% FOR a IN accounts %]
+<div class="content-item account">
+  <p>[% a.domain %]</p>
+  <a href="[% c.uri_for('/accounts/' _ a.domain _ '/' _ a.account ); %]">[% a.account %]</a>
+</div>
+[% END %]

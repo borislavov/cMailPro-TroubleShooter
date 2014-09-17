@@ -16,8 +16,8 @@
 	  Search
 	</div>
 	<ul class="navigation-topic-items">
-	  <li class="navigation-item"><a href="[%c.uri_for('/domains/search'); %]">Search by domain</a></li>
-	  <li class="navigation-item">Search by account</li>
+	  <li class="navigation-item"><a href="[%c.uri_for('/domains/search'); %]">Search for domain</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/search') %]">Search for account</a></li>
 	  <li class="navigation-item">Search by mail account</li>
 	</ul>
       </li>
@@ -31,7 +31,19 @@
 	  <li class="navigation-item"><a href="[% c.uri_for('/domains/search');  %]" >Search domains</a></li>
 	  <li class="navigation-item">Domain information</li>
 	  <li class="navigation-item">Edit domain</li>
-	  <li class="navigation-item">Domain accounts</li>
+	</ul>
+      </li>
+
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
+	  Account information
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/'); %]">List Accounts</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/search');  %]" >Search accounts</a></li>
+	  <li class="navigation-item">Account information</li>
+	  <li class="navigation-item">Edit account</li>
 	</ul>
       </li>
 

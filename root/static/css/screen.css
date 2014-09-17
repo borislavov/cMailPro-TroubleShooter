@@ -192,3 +192,13 @@ p {
     margin:  0.77em 1.538em 0.77em 0px;
     text-align: center;
 }
+
+.account_search p,
+.domain_search p {
+    float: left;
+}
+
+.clear-float {
+    clear: both;
+    display: block;
+}

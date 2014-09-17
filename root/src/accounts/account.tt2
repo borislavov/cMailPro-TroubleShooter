@@ -1,0 +1,34 @@
+<div class="account-settings">
+<p>Account (effective) settings for: [% account _ '@' _ domain %]</p>
+
+
+<table class="account-settings-table" >
+<tbody>
+<tr>
+  <th>
+    Key
+  </th>
+  <th>
+    Value
+  </th>
+</tr>
+[% FOREACH s IN account_settings.keys %]
+<tr>
+  <td>
+    [% s %]
+  </td>
+  <td>
+    [% val = account_settings.$s %]
+    [% IF NOT val.size %]
+        [% FOR v IN val.size %]
+	[% val.$v _ ',' %]
+	[% END %]
+    [% ELSE %]
+    [%  val %]
+    [% END %]
+  </td>
+</tr>
+[% END %]
+</tbody>
+</table>
+</div>
