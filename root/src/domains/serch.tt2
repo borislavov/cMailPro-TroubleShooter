@@ -1,3 +1,0 @@
-[% FOR d IN domains %]
-<div class="domain"><a href="[% c.uri_for('/domains/' _ d); %]">[% d %]</a></div>
-[% END %]
