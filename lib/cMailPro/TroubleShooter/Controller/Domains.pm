@@ -27,23 +27,21 @@ sub index :Path :Args(0) {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	my $args = [ { "cg_connection_error" => 1,
-		       "cg_command_error" => 0,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
     my $domains = $cg_cli->ListDomains();
 
     if (!$cg_cli->isSuccess) {
-	my $args = [ { "cg_connection_error" => 0,
-		       "cg_command_error" => 1,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
     $c->stash->{domains} = $domains;
@@ -66,25 +64,23 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	my $args = [ { "cg_connection_error" => 1,
-		       "cg_command_error" => 0,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
-    my $domain_settings= $cg_cli->GetDomainEffectiveSettings($domain);
+    my $domain_settings = $cg_cli->GetDomainEffectiveSettings($domain);
 
     $c->log->debug(Dumper $domain_settings);
 
     if (!$cg_cli->isSuccess) {
-	my $args = [ { "cg_connection_error" => 0,
-		       "cg_command_error" => 1,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
     $c->stash->{domain_settings} = $domain_settings;
@@ -111,24 +107,22 @@ sub search :LocalRegex('^search(/)*(.*)') {
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
-	my $args = [ { "cg_connection_error" => 1,
-		       "cg_command_error" => 0,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
     my $domains = $cg_cli->ListDomains();
 
     if (!$cg_cli->isSuccess) {
 
-	my $args = [ { "cg_connection_error" => 0,
-		       "cg_command_error" => 1,
-		       "cg_cli" => $cg_cli
-	}];
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
 
-	$c->detach( "Root", "end", $args );
+	$c->detach( "Root", "end", $cg_err_args );
     }
 
     if (!$domain) {
