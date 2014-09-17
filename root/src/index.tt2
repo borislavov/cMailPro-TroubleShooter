@@ -1,2 +1,11 @@
 [% META title = 'Overview' %]
 <p>Landing page</p>
+
+<div class="content-item">
+</div>
+
+<div class="content-item">
+</div>
+
+<div class="content-item">
+</div>

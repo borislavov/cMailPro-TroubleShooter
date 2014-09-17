@@ -78,8 +78,12 @@ table {
 .main .content {
     border: 1px dashed black;
     float: right;
-    width: 78%;
+    width: 75%;
     position: relative;
+}
+
+.content {
+    padding: 15px;
 }
 
 #navigation-search {
@@ -176,4 +180,15 @@ p {
 .message, .error {
     padding: 5px;
     margin: 5px;
+}
+
+
+.content-item {
+    width: 162px;
+    height: 101px;
+    border: 1px solid black;
+    display: block;
+    float: left;
+    margin:  0.77em 1.538em 0.77em 0px;
+    text-align: center;
 }
