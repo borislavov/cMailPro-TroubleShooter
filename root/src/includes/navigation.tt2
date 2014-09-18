@@ -42,7 +42,7 @@
 	<ul class="navigation-topic-items">
 	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/'); %]">List Accounts</a></li>
 	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/~search');  %]" >Search accounts</a></li>
-	  <li class="navigation-item">Account information</li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/accounts/~verify_password/'); %]">Verify account password</a></li> 
 	  <li class="navigation-item">Edit account</li>
 	</ul>
       </li>

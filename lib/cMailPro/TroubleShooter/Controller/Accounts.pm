@@ -152,6 +152,60 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     $c->stash->{domain} = $domain;
 }
 
+sub verify_password :LocalRegex("^~verify_password((/)*(.*)/(.*))*") {
+    my ( $self, $c ) = @_;
+
+    my $account = $c->request->captures->[3].'@'.$c->request->captures->[2];
+    $account = ($account eq '@') ? '' : $account;
+
+    my $password;
+
+    if ($c->request->method eq "POST") {
+	$account = $c->request->param("account") unless $account;
+	$password = $c->request->param("password");
+    }
+
+    $c->stash->{account} = $account;
+    $c->stash->{password} = $password;
+
+    # Just render the form
+    if (!$account) {
+	$c->detach( "Root", "end");
+    }
+
+    my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+    if (!$cg_cli) {
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    if ($account && $password) {
+	my $verify_account = $cg_cli->VerifyAccountPassword("$account", $password);
+
+	if (!$cg_cli->isSuccess) {
+
+	    # Error code 515 is for invalid user or password
+	    # Error code 512 is for invalid domain
+	    if ($cg_cli->getErrCode != 515 &&
+		$cg_cli->getErrCode != 512) {
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    } else {
+		$c->stash->{error_msg} = [ "Invalid user or password" ] ;
+	    }
+	}
+
+	$c->stash->{verify_account_password} = $verify_account ? "Valid" : "Invalid";
+    }
+}
+
 =head2 search
 
     Search for an account.
