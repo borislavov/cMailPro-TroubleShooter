@@ -94,6 +94,31 @@ sub account :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)/(.*)") {
 	$c->detach( "Root", "end", $cg_err_args );
     }
 
+
+    my $account_info = $cg_cli->GetAccountInfo("$account\@$domain");
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    # Clear some characters from dates and IP addreses strings
+    my @clear_strings = ( "Created", "LastLogin", "PrevLogin",
+		 "LastFailedLogin", "LastAddress", "PrevLoginAddress",
+		 "LastFailedLoginAddress");
+
+    for my $cs (@clear_strings) {
+	$account_info->{$cs} =~  s/_/ / unless !$account_info->{$cs};
+	$account_info->{$cs} =~  s/\[// unless !$account_info->{$cs};
+	$account_info->{$cs} =~  s/\]// unless !$account_info->{$cs};
+	$account_info->{$cs} =~  s/#T// unless !$account_info->{$cs};
+    }
+
+    $c->stash->{account_info} = $account_info;
+
     my $account_settings = $cg_cli->GetAccountEffectiveSettings("$account\@$domain");
 
     if (!$cg_cli->isSuccess) {
@@ -103,6 +128,13 @@ sub account :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)/(.*)") {
 
 	$c->detach( "Root", "end", $cg_err_args );
     }
+
+    # Prepare Enabled Services
+
+    my $enabled_services =
+	$c->model("CommuniGate::CLI")->get_enabled_services($account_settings->{AccessModes});
+
+    $c->stash->{enabled_services} = $enabled_services;
 
     for my $k (keys $account_settings) {
 	if (ref $account_settings->{$k} eq 'ARRAY') {

@@ -1,6 +1,43 @@
 <div class="account-settings">
-<p>Account (effective) settings for: [% account _ '@' _ domain %]</p>
+  <h2>Settings for account: [% account _ '@' _ domain %]</h2>
+  <p>Type: </p>
+  <p>Created: [% account_info.Created %] </p>
+  <p>Real Name: [% account_settings.RealName %]</p>
+  <p>State/Province: [% account_settings.st %] </p>
+  <p>City: [% account_settings.l %]</p>
+  <p>Unit: [% account_settings.ou %] </p>
 
+  <h2>Enabled services</h2>
+
+  <div class="account_enabled_services">
+    [% FOREACH e IN enabled_services.keys.sort %]
+    <p>[% (enabled_services.$e ? '+' : '-') _ ' ' _ e %]</p>
+    [% END %]
+  </div>
+  <div class="clear-float" > </div>
+
+
+<h3>Last login</h3>
+[% IF account_info.LastLogin %]
+<p>Date: [% account_info.LastLogin %];  IP address: [% account_info.LastAddress %]</p>
+[% END %]
+
+[% IF account_info.PrevLogin %]
+<p>Date: [% account_info.PrevLogin %];  IP address: [% account_info.PrevLoginAddress %] </p>
+[% END %]
+
+[% IF NOT account_info.PrevLogin AND NOT account_info.LastLogin %]
+<p>N/A</p>
+[% END %]
+
+<h3>Failed login</h3>
+[% IF account_info.LastFailedLogin %]
+<p> Date: [% account_info.LastFailedLogin %]; IP address: [% account_info.LastFailedLoginAddress %]</p>
+[% ELSE %]
+<p>N/A</p>
+[% END %]
+
+<h2>All (effective) raw settings for account: [% account _ '@' _ domain %]</h2>
 
 <table class="account-settings-table" >
 <tbody>
@@ -12,7 +49,7 @@
     Value
   </th>
 </tr>
-[% FOREACH s IN account_settings.keys %]
+[% FOREACH s IN account_settings.keys.sort %]
 <tr>
   <td>
     [% s %]
