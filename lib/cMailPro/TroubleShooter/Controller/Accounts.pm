@@ -104,6 +104,12 @@ sub account :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)/(.*)") {
 	$c->detach( "Root", "end", $cg_err_args );
     }
 
+    for my $k (keys $account_settings) {
+	if (ref $account_settings->{$k} eq 'ARRAY') {
+	    $account_settings->{$k} = join (", ",@{$account_settings->{$k}});
+	}
+    }
+
     # Hide plain passowrds.
     if ($account_settings->{Password}) {
 	$account_settings->{Password} = "*******";
