@@ -75,10 +75,10 @@ sub index :Path :Args(0) {
 
 =cut 
 
-sub account :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)/(.*)") {
+sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     my ( $self, $c ) = @_;
-    my $account = $c->request->captures->[3];
-    my $domain = $c->request->captures->[2];
+    my $account = $c->request->captures->[2];
+    my $domain = $c->request->captures->[1];
 
     if (!$account) {
 	$c->response->redirect( $c->uri_for("/accounts"), 302 );
@@ -158,7 +158,7 @@ sub account :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)/(.*)") {
 
 =cut 
 
-sub search :LocalRegex('^search(/)*(.*)') {
+sub search :LocalRegex('^~search(/)*(.*)') {
     my ( $self, $c ) = @_;
 
     my $account = $c->request->captures->[1];
@@ -168,7 +168,7 @@ sub search :LocalRegex('^search(/)*(.*)') {
     }
 
     if ($account && $c->request->path !~ /$account$/ ) {
-	$c->response->redirect( $c->uri_for("search/$account"), 302 );
+	$c->response->redirect( $c->uri_for("~search/$account"), 302 );
     }
 
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();

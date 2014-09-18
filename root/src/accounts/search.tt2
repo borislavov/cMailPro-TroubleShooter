@@ -1,5 +1,5 @@
 <div class="account_search">
-    <form id="account_search" method="post" action="[% c.uri_for('/accounts/search') %]" >
+    <form id="account_search" method="post" action="[% c.uri_for('/accounts/~search') %]" >
       <p>
 	<label for="account-search">Search for account</label>
       </p>
