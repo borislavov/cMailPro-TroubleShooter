@@ -73,20 +73,19 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 
     my $domain_settings = $cg_cli->GetDomainEffectiveSettings($domain);
 
-    for my $k (keys $domain_settings) {
-	if (ref $domain_settings->{$k} eq 'ARRAY') {
-	    $domain_settings->{$k} = join (", ",@{$domain_settings->{$k}});
-	}
-    }
-
-    $c->log->debug(Dumper $domain_settings);
-
     if (!$cg_cli->isSuccess) {
 	my $cg_err_args = [ { "cg_command_error" => 1,
 			      "cg_cli" => $cg_cli
 			    }];
 
 	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+
+    for my $k (keys $domain_settings) {
+	if (ref $domain_settings->{$k} eq 'ARRAY') {
+	    $domain_settings->{$k} = join (", ",@{$domain_settings->{$k}});
+	}
     }
 
     $c->stash->{domain_settings} = $domain_settings;
