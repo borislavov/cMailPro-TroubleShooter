@@ -224,7 +224,17 @@ p {
     overflow:auto;
 }
 
+.per_domain_account_defaults p,
 .account_enabled_services p,
 .domain_enabled_services p {
     float: left;
+}
+
+.per_domain_account_list  li{
+    float: left;
+    margin:  0.77em 1.538em 0.77em 0px;
+    border: 1px solid black;
+    width: 90px;
+    height: 50px;
+    text-align: center;
 }

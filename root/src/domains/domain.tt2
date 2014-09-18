@@ -1,4 +1,5 @@
 <div class="domain-settings">
+  <h1>Domain: [% domain %]</h1>
   <h2>Enabled services</h2>
 
   <div class="domain_enabled_services">
@@ -10,6 +11,26 @@
   </div>
   <div class="clear-float" > </div>
 
+
+  <h2>Account list</h2>
+  [% FOREACH acc IN account_list.sort %]
+  <ul class="per_domain_account_list">
+    <li><a href="[% c.uri_for('/accounts/' _ domain _ '/' _ acc) %]">[% acc %]<a></li>
+  </ul>
+  [% END %]
+  <div class="clear-float"> </div>
+
+  <h2>Account Defaults</h2>
+  <div class="per_domain_account_defaults">
+
+    <p>[% (account_defaults.Default ? '+' : '-') _ ' Default' %]</p>
+    [% account_defaults.delete('Default') %]
+
+    [% FOREACH acc IN account_defaults.keys.sort %]
+    <p>[% (account_defaults.$acc ? '+' : '-') _ ' ' _ acc %]</p>
+    [% END %]
+  </div>
+  <div class="clear-float"> </div>
 
 
   <h2>All (effective) raw settings for domain: [% domain %]</h2>

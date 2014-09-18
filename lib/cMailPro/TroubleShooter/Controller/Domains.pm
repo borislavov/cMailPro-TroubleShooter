@@ -61,6 +61,8 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 	$c->response->redirect( $c->uri_for("/domains"), 302 );
     }
 
+    $c->stash->{domain} = $domain;
+
     my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
 
     if (!$cg_cli) {
@@ -70,6 +72,18 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 
 	$c->detach( "Root", "end", $cg_err_args );
     }
+
+    my $account_list = $cg_cli->ListAccounts($domain);
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    $c->stash->{account_list} = $account_list;
 
     my $domain_settings = $cg_cli->GetDomainEffectiveSettings($domain);
 
@@ -88,7 +102,6 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 
     $c->stash->{enabled_services} = $enabled_services;
 
-
     for my $k (keys $domain_settings) {
 	if (ref $domain_settings->{$k} eq 'ARRAY') {
 	    $domain_settings->{$k} = join (", ",@{$domain_settings->{$k}});
@@ -96,7 +109,23 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
     }
 
     $c->stash->{domain_settings} = $domain_settings;
-    $c->stash->{domain} = $domain;
+
+    my $account_defaults = $cg_cli->GetAccountDefaults($domain);
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    $account_defaults =
+	$c->model("CommuniGate::CLI")->get_enabled_services($account_defaults->{AccessModes});
+    $c->log->debug("Defaults ac ", Dumper $account_defaults);
+
+    $c->stash->{account_defaults} = $account_defaults;
+
 }
 
 =head2 search
