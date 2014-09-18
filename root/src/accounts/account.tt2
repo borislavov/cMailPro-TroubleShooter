@@ -10,6 +10,9 @@
   <h2>Enabled services</h2>
 
   <div class="account_enabled_services">
+    <p>[% (enabled_services.Default ? '+' : '-') _ ' Default' %]</p>
+    [% enabled_services.delete('Default') %]
+
     [% FOREACH e IN enabled_services.keys.sort %]
     <p>[% (enabled_services.$e ? '+' : '-') _ ' ' _ e %]</p>
     [% END %]

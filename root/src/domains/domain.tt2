@@ -2,42 +2,46 @@
   <h2>Enabled services</h2>
 
   <div class="domain_enabled_services">
+    <p>[% (enabled_services.Default ? '+' : '-') _ ' Default' %]</p>
+    [% enabled_services.delete('Default') %]
     [% FOREACH e IN enabled_services.keys.sort %]
     <p>[% (enabled_services.$e ? '+' : '-') _ ' ' _ e %]</p>
     [% END %]
   </div>
   <div class="clear-float" > </div>
 
-<h2>All (effective) raw settings for domain: [% domain %]</h2>
 
 
-<table class="domain-settings-table" >
-<tbody>
-<tr>
-  <th>
-    Key
-  </th>
-  <th>
-    Value
-  </th>
-</tr>
-[% FOREACH s IN domain_settings.keys.sort %]
-<tr>
-  <td>
-    [% s %]
-  </td>
-  <td>
-    [% val = domain_settings.$s %]
-    [% IF NOT val.size %]
-        [% FOR v IN val.size %]
-	[% val.$v _ ',' %]
-	[% END %]
-    [% ELSE %]
-    [%  val %]
-    [% END %]
-  </td>
-</tr>
-[% END %]
-</tbody>
-</table>
+  <h2>All (effective) raw settings for domain: [% domain %]</h2>
+
+
+  <table class="domain-settings-table" >
+    <tbody>
+      <tr>
+	<th>
+	  Key
+	</th>
+	<th>
+	  Value
+	</th>
+      </tr>
+      [% FOREACH s IN domain_settings.keys.sort %]
+      <tr>
+	<td>
+	  [% s %]
+	</td>
+	<td>
+	  [% val = domain_settings.$s %]
+	  [% IF NOT val.size %]
+	  [% FOR v IN val.size %]
+	  [% val.$v _ ',' %]
+	  [% END %]
+	  [% ELSE %]
+	  [%  val %]
+	  [% END %]
+	</td>
+      </tr>
+      [% END %]
+    </tbody>
+  </table>
 </div>

@@ -73,6 +73,7 @@ sub get_enabled_services {
     my $raw_services = shift;
 
     my $enabled_services = {
+	"Default" => 1,
 	'Mail' => 1, 'Relay' => 1, 'Signal' =>1, 'Mobile' => 1,
 	'TLS' => 1, 'POP' => 1, 'IMAP' => 1, 'MAPI' => 1,
 	'AirSync' => 1, 'SIP' => 1, 'WebMail' => 1, 'XIMSS' => 1,
