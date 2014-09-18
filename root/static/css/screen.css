@@ -203,22 +203,28 @@ p {
     display: block;
 }
 
+.domain-settings p,
 .account-settings p {
     margin-bottom: 10px;
 }
 
+.domain-settings h2,
+.domain-settings h3,
 .account-settings h2,
 .account-settings h3 {
     margin-top: 25px;
     margin-bottom: 15px;
 }
 
+
+.account_enabled_services,
 .account_enabled_services {
     margin-bottom: 20px;
     min-height: 80px;
     overflow:auto;
 }
 
-.account_enabled_services p {
+.account_enabled_services p,
+.domain_enabled_services p {
     float: left;
 }

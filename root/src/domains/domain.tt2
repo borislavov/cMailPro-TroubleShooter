@@ -1,5 +1,14 @@
 <div class="domain-settings">
-<p>Domain (effective) settings for: [% domain %]</p>
+  <h2>Enabled services</h2>
+
+  <div class="domain_enabled_services">
+    [% FOREACH e IN enabled_services.keys.sort %]
+    <p>[% (enabled_services.$e ? '+' : '-') _ ' ' _ e %]</p>
+    [% END %]
+  </div>
+  <div class="clear-float" > </div>
+
+<h2>All (effective) raw settings for domain: [% domain %]</h2>
 
 
 <table class="domain-settings-table" >
@@ -12,7 +21,7 @@
     Value
   </th>
 </tr>
-[% FOREACH s IN domain_settings.keys %]
+[% FOREACH s IN domain_settings.keys.sort %]
 <tr>
   <td>
     [% s %]

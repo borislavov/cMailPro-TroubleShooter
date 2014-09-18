@@ -81,6 +81,13 @@ sub domain :LocalRegex("^(?!(search(/)|search/.*|search$))(.*)") {
 	$c->detach( "Root", "end", $cg_err_args );
     }
 
+    # Prepare Enabled Services
+
+    my $enabled_services =
+	$c->model("CommuniGate::CLI")->get_enabled_services($domain_settings->{DomainAccessModes});
+
+    $c->stash->{enabled_services} = $enabled_services;
+
 
     for my $k (keys $domain_settings) {
 	if (ref $domain_settings->{$k} eq 'ARRAY') {
