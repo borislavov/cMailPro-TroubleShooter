@@ -72,6 +72,7 @@ sub get_enabled_services {
     my $self = shift;
     my $raw_services = shift;
 
+    # $raw_services eq 'All'
     my $enabled_services = {
 	"Default" => 1,
 	'Mail' => 1, 'Relay' => 1, 'Signal' =>1, 'Mobile' => 1,
@@ -95,6 +96,13 @@ sub get_enabled_services {
 	    if (!$obj_enabled_services->{$es}) {
 		$enabled_services->{$es} = 0;
 	    }
+	}
+    } elsif ($raw_services eq 'None') {
+	# Remove the default setting. It is not possible to decide
+	# what value it has.
+	delete $enabled_services->{Default};
+	for my $es (keys $enabled_services) {
+	    $enabled_services->{$es} = 0;
 	}
     }
 
