@@ -72,6 +72,23 @@
 
       <li class="navigation-topic">
 	<div class="navigation-topic-title">
+	  IP addresses
+	</div>
+	<ul class="navigation-topic-items">
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#tmp_blacklisted'); %]">Temproary blacklisted IP addresses</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#tmp_client'); %]">Temporary client IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#blacklisted'); %]">Blacklisted IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#denied'); %]">Denied IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#client'); %]">Client IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#whitehole'); %]">While hole IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#nated'); %]">NATed IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#debug'); %]">Debug IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#lan'); %]">LAN IPs</a></li>
+	</ul>
+      </li>
+
+      <li class="navigation-topic">
+	<div class="navigation-topic-title">
 	  Mail queues
 	</div>
 	<ul class="navigation-topic-items">

@@ -238,3 +238,20 @@ p {
     height: 50px;
     text-align: center;
 }
+
+
+.content-ip-addresses h2 {
+    min-heigh: 30px;
+    border-bottom: 1px solid black;
+    padding: 5px;
+    background-color: #ffffaa;
+}
+
+.content-ip-addresses {
+    width: 80%;
+    min-height: 100px;
+    overflow: auto;
+    border: 1px solid black;
+    margin-bottom: 10px;
+
+}
