@@ -255,3 +255,15 @@ p {
     margin-bottom: 10px;
 
 }
+
+.account-verify-password-wrapper p {
+    float: left;
+}
+
+.account-verify-password-result-valid {
+    color: green;
+}
+
+.account-verify-password-result-invalid {
+    color: red;
+}

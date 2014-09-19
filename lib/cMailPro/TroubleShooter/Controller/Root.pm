@@ -353,6 +353,15 @@ Attempt to render a view, if needed.
 sub end : ActionClass('RenderView') {
     my ( $self, $c, $args ) = @_;
 
+    my $h_x_request = $c->request->headers->header('X-Request');
+    my $h_accept = $c->request->headers->header('accept');
+
+    if ( ( $c->request->headers->content_type eq 'application/json' ) ||
+	 ( $h_x_request && ( $h_x_request eq 'JSON' ) ) ||
+	 ( $h_accept && ( $h_accept  eq 'appliaction/json')) ) {
+	$c->stash->{current_view} = 'JSON';
+    }
+
     if ( (ref ($args) eq 'HASH')
 	 && $args->{cg_command_error} ) {
 

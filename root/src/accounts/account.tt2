@@ -7,6 +7,22 @@
   <p>City: [% account_settings.l %]</p>
   <p>Unit: [% account_settings.ou %] </p>
 
+  <div class="account-verify-password-wrapper">
+    <form id="account-verify-password-form" method="post" action="[% c.uri_for('/accounts/~verify_password/'_ domain _ '/' _ account); %]" >
+      <p>
+	<label for="password">Verify Password</label>
+      </p>
+      <p>
+	<input id="password" name="password" type="password" />
+      </p>
+      <p>
+	<input type="submit" name="submit" value="Verify" />
+      </p>
+      <p id="account-verify-password-result"> </p>
+      <div class="clear-float"> </div>
+    </form>
+  </div>
+
   <h2>Enabled services</h2>
 
   <div class="account_enabled_services">
