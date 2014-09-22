@@ -12,7 +12,7 @@ use base qw(Catalyst::Model Class::Accessor);
 
 __PACKAGE__->mk_accessors(qw|PeerAddr PeerPort SecureLogin login password|);
 
-our $VERSION='0.2';
+our $VERSION='0.3';
 
 =head1 NAME
 
@@ -107,6 +107,31 @@ sub get_enabled_services {
     }
 
     return $enabled_services;
+}
+
+
+=head2 Get human-readable account type
+
+  get_account_type
+
+=cut
+
+sub get_account_type {
+    my ( $self, $raw_acc_type ) = @_;
+
+    my $accounts = {
+	'macnt' => 'Milti-Mailbox',
+	'mdir'  => 'Maildir INBOX only',
+	'mbox' => 'Text INBOX only (mbox)',
+	'mslc' => 'Sliced INBOX only',
+	'other' =>'Unknown'
+    };
+
+    if (exists $accounts->{$raw_acc_type}) {
+	return $accounts->{$raw_acc_type};
+    }
+
+    return $accounts->{other};
 }
 
 
