@@ -289,7 +289,14 @@ sub extract_domains_and_accounts :Private {
 	$c->detach( "Root", "end", $args );
     }
 
-    my $accounts = [];
+    my $accounts = {
+	'macnt' => 0,
+	'mdir'  => 0,
+	'mbox' => 0,
+	'mslc' => 0,
+	'other' => 0,
+	'all'  => 0
+    };
 
     for my $domain (@$domains) {
 
@@ -304,11 +311,20 @@ sub extract_domains_and_accounts :Private {
 	    $c->detach( "Root", "end", $cg_err_args );
 	}
 
-	push $accounts, $domain_acc;
+	for my $val (values %$domain_acc) {
+
+	    if (exists $accounts->{$val}) {
+		$accounts->{$val} ++;
+	    } else {
+		$accounts->{'other'}++;
+	    }
+
+	    $accounts->{'all'}++;
+	}
     }
 
     $c->stash->{num_domains} = scalar(@$domains);
-    $c->stash->{num_accounts} = scalar(@$accounts);
+    $c->stash->{num_accounts} = $accounts;
 }
 
 =head2 index

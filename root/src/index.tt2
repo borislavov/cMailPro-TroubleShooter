@@ -2,47 +2,69 @@
 <p>Landing page</p>
 
 <div class="content-item">
-    <p>Number of <a href="[% c.uri_for('/domains'); %]">domains</a>:[% num_domains %]</p>
+    <p><a href="[% c.uri_for('/domains'); %]">Domains</a>:[% num_domains %]</p>
 </div>
 
 <div class="content-item">
-     <p>Number of <a href="[% c.uri_for('/accounts'); %]">accounts</a>: [% num_accounts %]</p>
+     <p><a href="[% c.uri_for('/accounts'); %]">Accounts</a>: [% num_accounts.all %]</p>
+</div>
+
+<div class="content-item">
+    <p>Multi-Mailbox accounts: [% num_accounts.macnt %]</p>
+</div>
+
+
+<div class="content-item">
+    <p>"Mailrdir INBOX only" accounts: [% num_accounts.mdir %]</p>
+</div>
+
+
+<div class="content-item">
+    <p>"Text INBOX only" (mbox) accounts: [% num_accounts.mbox %]</p>
+</div>
+
+
+<div class="content-item">
+    <p>"Sliced INBOX only" accounts: [% num_accounts.mslc %]</p>
+</div>
+
+<div class="content-item">
+    <p>Other account types: [% num_accounts.other %]</p>
+</div>
+
+<div class="content-item ">
+  <p><a href="[% c.uri_for('/ip_addresses#tmp_client'); %]">Temporary client IP addresses</a>: [% num_tmp_client_ips %]</p>
 </div>
 
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#tmp_client'); %]">temporary client IP addresses</a>: [% num_tmp_client_ips %]</p>
-</div>
-
-
-<div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#tmp_blacklisted'); %]">temporary blacklisted IP addresses</a>: [% num_tmp_blacklisted_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#tmp_blacklisted'); %]">Temporary blacklisted IP addresses</a>: [% num_tmp_blacklisted_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#blacklisted'); %]">blacklisted IP addresses</a>: [% num_blacklisted_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#blacklisted'); %]">Blacklisted IP addresses</a>: [% num_blacklisted_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#denied'); %]">denied IP addresses</a>: [% num_denied_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#denied'); %]">Denied IP addresses</a>: [% num_denied_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#client'); %]">client IP addresses</a>: [% num_client_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#client'); %]">Client IP addresses</a>: [% num_client_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#whitehole'); %]">white hole IP addresses</a>: [% num_whitehole_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#whitehole'); %]">White hole IP addresses</a>: [% num_whitehole_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#nated'); %]">NATed IP addresses</a>: [% num_nated_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#nated'); %]">NATed IP addresses</a>: [% num_nated_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#lan'); %]">LAN IP addresses</a>: [% num_lan_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#lan'); %]">LAN IP addresses</a>: [% num_lan_ips %]</p>
 </div>
 
 <div class="content-item ">
-  <p>Number of <a href="[% c.uri_for('/ip_addresses#debug'); %]">debug IP addresses</a>: [% num_client_ips %]</p>
+  <p><a href="[% c.uri_for('/ip_addresses#debug'); %]">Debug IP addresses</a>: [% num_client_ips %]</p>
 </div>
