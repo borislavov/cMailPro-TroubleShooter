@@ -29,12 +29,11 @@ L<cMailPro::TroubleShooter>
 
 =head1 AUTHOR
 
-Ivaylo Valkov,,,
+Ivaylo Valkov <ivaylo@e-valkov.org>
 
 =head1 LICENSE
 
-This library is free software. You can redistribute it and/or modify
-it under the same terms as Perl itself.
+Awaiting contractor approval.
 
 =cut
 
