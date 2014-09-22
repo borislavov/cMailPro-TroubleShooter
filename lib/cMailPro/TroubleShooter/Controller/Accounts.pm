@@ -60,8 +60,12 @@ sub index :Path :Args(0) {
 	}
 
 	foreach my $account (keys $accounts) {
+	    my $acc_type =
+		$c->model("CommuniGate::CLI")->get_account_type($accounts->{$account});
+
 	    push $render_accounts, { "domain" => $domain,
-				     "account" => $account
+				     "account" => $account,
+				     "type"  => $acc_type
 	    };
 	}
     }
@@ -94,6 +98,21 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 	$c->detach( "Root", "end", $cg_err_args );
     }
 
+
+    my $account_type = $cg_cli->GetAccountLocation("$account\@$domain");
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    $account_type =~ s/$account\.//;
+    $account_type = $c->model("CommuniGate::CLI")->get_account_type($account_type);
+
+    $c->stash->{acc_type} = $account_type;
 
     my $account_info = $cg_cli->GetAccountInfo("$account\@$domain");
 
