@@ -33,7 +33,7 @@ sub index :Path :Args(0) {
 
 =cut
 
-sub messages :LocalRegexp("^(?!(~.*$))messages$") {
+sub messages :LocalRegexp('^(?!(~.*$))messages$') {
     my ( $self, $c ) = @_;
 
     my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
@@ -75,6 +75,97 @@ sub message :LocalRegexp("^(?!(~.*$))messages/(.*)") {
 }
 
 
+=head2 release
+
+=cut
+
+sub release :Local {
+    my ( $self, $c ) = @_;
+
+}
+
+=head2 reject
+
+=cut
+
+sub reject :LocalRegex('^reject$') {
+    my ( $self, $c ) = @_;
+    my $message_id = $c->request->param('message');
+
+    if ($message_id !~ m/\d+/) {
+	$c->stash->{message_does_not_exist} = '1';
+	undef $message_id;
+    }
+
+    if ($c->request->method eq 'POST' && $message_id) {
+
+	my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+	my $res = $cg_ts_api->fetch('/message_exists/'.$message_id);
+
+	if (defined $res->{message_exists} &&
+	    $res->{message_exists}) {
+	    $c->response->redirect( $c->uri_for("reject/".$message_id), 302 );
+	} else {
+	    $c->stash->{message_does_not_exist} = '1';
+	}
+    }
+}
+
+=head2 reject_single
+
+=cut
+
+sub reject_single :LocalRegex('^reject/(.*)') {
+    my ( $self, $c ) = @_;
+
+    my $message_id = $c->request->captures->[0];
+
+    if (!$message_id) {
+	$c->response->status(500);
+	$c->stash->{status_msg}  = [ 'Missing parameter' ] ;
+	$c->stash->{error_msg}  = [ 'Message id is required for rejection to work.' ] ;
+	$c->detach( 'Root', 'end' );
+    }
+
+    my $rejected_message = { id => $message_id, rejected => 0, confirmed => 0 };
+
+    if ($c->request->method eq 'POST' &&
+	$c->request->param('confirm_reject_1') &&
+	$c->request->param('confirm_reject_2') ) {
+	$rejected_message->{confirmed} = 1;
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$cg_cli->RejectQueueMessage($message_id);
+
+	if (!$cg_cli->isSuccess) {
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$rejected_message->{rejected} = 1;
+    }
+
+    $c->stash->{rejected_message} = $rejected_message;
+}
+
+=head2 reject_all
+
+=cut
+
+sub reject_all :LocalRegex('^reject/~all') {
+}
 
 =head1 AUTHOR
 

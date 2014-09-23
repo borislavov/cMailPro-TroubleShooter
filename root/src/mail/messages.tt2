@@ -3,6 +3,9 @@
 <thead>
   <tr>
     <th>
+      Reject
+    </th>
+    <th>
       ID
     </th>
     <th>
@@ -23,6 +26,9 @@
 
 [% FOR m IN messages %] 
 <tr>
+  <td>
+    <a href="[% c.uri_for('/mail/reject/' _ m.id ); %]" title="Reject message [% m.id %]">x</a>
+  </td>
   <td>
     <a href="[% c.uri_for('messages/' _ m.id); %]">[% m.id %]</a>
   </td>

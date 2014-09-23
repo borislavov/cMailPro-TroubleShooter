@@ -1,0 +1,20 @@
+<div class="reject-messages">
+  <form method="post" action="[% c.uri_for('reject' ) %]">
+    <p>
+      <label for="message">Find message to reject</label>
+    </p>
+
+    <p>
+      <input id="message" name="message" type="text" value="" />
+    </p>
+
+    <p>
+      <input id="find-to-reject-submit" name="find-to-reject-submit" type="submit" value="Find" />
+    </p>
+  </form>
+  <div class="clear-float" > </div>
+</div>
+
+[% IF message_does_not_exist %]
+  <p>Message not found</p>
+[% END %]

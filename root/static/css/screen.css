@@ -267,3 +267,10 @@ p {
 .account-verify-password-result-invalid {
     color: red;
 }
+
+
+.reject-single-message p,
+.reject-messages p,
+.release-messages p {
+    float: left;
+}
