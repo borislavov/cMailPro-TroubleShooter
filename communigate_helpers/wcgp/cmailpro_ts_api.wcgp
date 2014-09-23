@@ -1,0 +1,32 @@
+entry sysEntry is
+   theSet = NewDictionary();
+
+   username = GetHTTPParameter("username",0);
+   password = GetHTTPParameter("password",0);
+   api_method = GetHTTPParameter("api_method",0);
+
+   if IsString(username) && IsString(password) then
+     cmd = "VERIFYACCOUNTPASSWORD " + username + " PASSWORD " + password;
+     rc = ExecuteCLI(cmd);
+     if IsString(rc) then
+       // Set Error Message
+       theSet.error = rc;
+       theSet.status = "500";
+     else
+        params = newDictionary();
+        res = HTTPCall("https://127.0.0.1:9100/cgi-bin/cmailpro_ts_api.cgi"+"/"+api_method, params);
+        if isNumber(res.responseCode) && res.responseCode == 200 then
+           theSet.response = String(res.body);
+           theSet.status = "200";
+        else
+           theSet.status = "500";
+        end if;
+     end if;
+   else
+     theSet.status = "401";
+     theSet.body = "Authorization required";
+   end if;
+   SetHTTPResponseType("application","json");
+   SetHTTPResponseCode(theSet.status+"-");
+   SetHTTPResponseData(ObjectToJSON(theSet));
+end entry;
