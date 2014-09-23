@@ -10,7 +10,7 @@ use JSON;
 use File::Find::Rule;
 use File::Slurp;
 
-our $VERSION = '0.1';
+our $VERSION = '0.2';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -24,6 +24,7 @@ sub main {
 	return;
     }
 
+    my @captured;
     my $render_data ; 
     my $path = $q->path_info;
 
@@ -31,16 +32,34 @@ sub main {
 	$render_data = { api => $NAME, api_version => $VERSION }; 
     } elsif ($path =~ m/messages(\/)*$/) {
 	$render_data = messages();
-    } elsif (my @captured = $path =~ m/messages\/(.*)$/) { 
+    } elsif (@captured = $path =~ m/messages\/(.*)$/) {
 	my $message = $captured[0];
 
 	$render_data = message($message);
+    } elsif (@captured = $path =~ m/message_exists\/(.*)$/) {
+	my $message = $captured[0];
+
+	$render_data = message_exists($message);
     }
 
     render($q, $render_data);
 }
 
-# https://IP:port/cgi/this.cgi/message/<msg_id>
+# https://IP:port/cgi/this.cgi/message_exists/<msg_id>
+sub message_exists {
+    my $message = shift;
+    my $json  = { message_exists => 0 };
+
+    my @file = File::Find::Rule->file()->name($message.".msg")->in($queue_dir);
+    if ($file[0]) {
+	$json->{message_exists} = 1;
+    }
+
+    return $json;
+}
+
+
+# https://IP:port/cgi/this.cgi/messages/<msg_id>
 sub message {
     my $message = shift;
 
