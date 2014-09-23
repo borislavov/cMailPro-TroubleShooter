@@ -1,0 +1,8 @@
+[% FOR m IN message %] 
+  <p>
+    [% FILTER html%]	
+     [% m %]
+    [% END %]
+  </p>
+[%END%]
+

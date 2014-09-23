@@ -89,10 +89,10 @@
 
       <li class="navigation-topic">
 	<div class="navigation-topic-title">
-	  Mail queues
+	  Mail
 	</div>
 	<ul class="navigation-topic-items">
-	  <li class="navigation-item">View mail queue</li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/mail/'); %]">Mail queue</a></li>
 	  <li class="navigation-item">Send all mail in the queue</li>
 	  <li class="navigation-item">Send a single mail in the queue</li>
 	  <li class="navigation-item">Remove mail from the queue</li>

@@ -1,0 +1,53 @@
+<p>Mail queue</p>
+<table>
+<thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Date
+    </th>
+    <th>
+      From
+    </th>
+    <th>
+      To
+    </th>
+    <th>
+      Subject
+    </th>
+  </tr>
+</thead>
+<tbody>
+
+[% FOR m IN messages %] 
+<tr>
+  <td>
+    <a href="[% c.uri_for('messages/' _ m.id); %]">[% m.id %]</a>
+  </td>
+  <td>
+   [% FILTER html %]
+   [% m.date %]
+   [% END %]
+  </td>
+  <td>
+    [% FILTER html %]
+    [% m.from %]
+    [% END %]
+  </td>
+
+  <td>
+    [% FILTER html%]
+    [% m.to %]
+    [% END %]
+  </td>
+  <td>
+   [% FILTER html %]
+   [% m.subject %]
+   [% END %]
+  </td>
+</tr>
+[%END%]
+</tbody>
+</table>
