@@ -92,7 +92,7 @@ sub reject :LocalRegex('^reject$') {
     my ( $self, $c ) = @_;
     my $message_id = $c->request->param('message');
 
-    if ($message_id !~ m/\d+/) {
+    if ($message_id && $message_id !~ m/\d+/) {
 	$c->stash->{message_does_not_exist} = '1';
 	undef $message_id;
     }
