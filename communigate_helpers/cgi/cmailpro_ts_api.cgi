@@ -10,7 +10,7 @@ use JSON;
 use File::Find::Rule;
 use File::Slurp;
 
-our $VERSION = '0.2';
+our $VERSION = '0.3';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -40,6 +40,8 @@ sub main {
 	my $message = $captured[0];
 
 	$render_data = message_exists($message);
+    } elsif ($path =~ m/message_count$/) {
+	$render_data = message_count();
     }
 
     render($q, $render_data);
@@ -71,6 +73,15 @@ sub message {
     }
 
     return {};
+}
+
+# https://IP:port/cgi/this.cgi/message_count
+sub message_count {
+
+    my @files = sort(File::Find::Rule->file()->name("*.msg")->in($queue_dir));
+    my $count = scalar(@files);
+
+    return { message_count => $count };
 }
 
 # https://IP:port/cgi/this.cgi/messages
