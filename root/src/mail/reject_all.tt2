@@ -1,0 +1,35 @@
+<div class="reject-single-message">
+  <form method="post" action="[% c.uri_for('reject_all' ) %]">
+    <p>
+      <input id="confirm_reject-1" name="confirm_reject_1" type="checkbox" value="1" />
+    </p>
+    <p>
+      <label for="config_reject-1">Really reject all messages</label>
+    </p>
+
+    <div class="clear-float" > </div>
+    <p>
+      <input id="confirm_reject-2" name="confirm_reject_2" type="checkbox" value="1" />
+    </p>
+    <p>
+      <label for="config_reject-2">Yes, really, really reject all messages</label>
+    </p>
+    
+    
+    <div class="clear-float" > </div>
+    <p>
+      <input id="reject-submit" name="reject-submit" type="submit" value="Reject" />
+    </p>
+  </form>
+
+  <div class="clear-float" > </div>
+[% FOR r IN rejected_messages %]
+  [% IF r.confirmed %]
+    [% IF r.rejected  %]
+      <p class="clear-float" >Message [% r.id %] rejected </p>
+    [% ELSE %]
+      <p class="clear-float"> Unable to reject message [% r.id %]: [% r.error %] </p>
+    [% END %]
+  [% END %]
+[% END %]
+</div>

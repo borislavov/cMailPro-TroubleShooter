@@ -20,6 +20,8 @@ Catalyst Controller.
 
 =head2 index
 
+ Redirects to message list
+
 =cut
 
 sub index :Path :Args(0) {
@@ -30,6 +32,7 @@ sub index :Path :Args(0) {
 
 =head2 messages
 
+ List all messages in the queue.
 
 =cut
 
@@ -49,6 +52,8 @@ sub messages :LocalRegexp('^(?!(~.*$))messages$') {
 }
 
 =head2  message
+
+ View single message in the queue.
 
 =cut 
 
@@ -74,17 +79,106 @@ sub message :LocalRegexp("^(?!(~.*$))messages/(.*)") {
     }
 }
 
+=head2
 
-=head2 release
+  Release single queue.
 
 =cut
 
-sub release :Local {
+
+sub release_single :LocalRegex('^release/(.*)') {
     my ( $self, $c ) = @_;
 
+    my $queue_id = $c->request->captures->[0];
+
+    if (!$queue_id) {
+	$c->response->status(500);
+	$c->stash->{status_msg}  = [ 'Missing parameter' ] ;
+	$c->stash->{error_msg}  = [ 'Queue/domain id is required for release to work.' ] ;
+	$c->detach( 'Root', 'end' );
+    }
+
+    my $released_queue = { id => $queue_id, released => 0, confirmed => 0 };
+
+    if ($c->request->method eq 'POST' &&
+	$c->request->param('confirm_release_1') &&
+	$c->request->param('confirm_release_2') ) {
+	$released_queue->{confirmed} = 1;
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$cg_cli->ReleaseSMTPQueue($queue_id);
+
+	if (!$cg_cli->isSuccess) {
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$released_queue->{released} = 1;
+    }
+
+    $c->stash->{released_queue} = $released_queue;
+}
+
+
+=head2 release
+
+ Find queue/domain to release.
+
+=cut
+
+sub release :LocalRegex('^release$') {
+    my ( $self, $c ) = @_;
+
+    my $queue_id = $c->request->param('queue');
+
+    if ($c->request->method eq 'POST' && $queue_id) {
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	my $domain = $cg_cli->GetDomainEffectiveSettings($queue_id);
+
+	if (!$cg_cli->isSuccess) {
+
+	    if ($cg_cli->getErrCode != 512) {
+
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    } else {
+		$c->stash->{queue_does_not_exist} = 1;
+		$c->detach( "Root", "end");
+	    }
+	}
+
+	$c->response->redirect( $c->uri_for("release/".$queue_id), 302 );
+    }
 }
 
 =head2 reject
+
+  Find existing message to reject from mail queue.
 
 =cut
 
@@ -112,6 +206,8 @@ sub reject :LocalRegex('^reject$') {
 }
 
 =head2 reject_single
+
+ Reject single message in the queue
 
 =cut
 
@@ -162,9 +258,111 @@ sub reject_single :LocalRegex('^reject/(.*)') {
 
 =head2 reject_all
 
+  Reject all messages in the queue
+
 =cut
 
-sub reject_all :LocalRegex('^reject/~all') {
+sub reject_all :LocalRegex('^reject_all') {
+    my ( $self, $c ) = @_;
+
+    my $rejected_messages = [];
+
+    if ($c->request->method eq 'POST' &&
+	$c->request->param('confirm_reject_1') &&
+	$c->request->param('confirm_reject_2') ) {
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+	my $messages = $cg_ts_api->fetch('/messages');
+
+	if ( $messages->{error} ) {
+	    $c->response->status(500);
+	    $c->stash->{error_msg} = [ $messages->{error} ];
+	    $c->stash->{status_msg} = ["Internal Server Error. CGI API communication error."];
+	    $c->detach( "Root", "end" );
+	}
+
+	for my $m (@{$messages->{messages}}) {
+	    my $message_id = $m->{id};
+
+	    my $rejected_message = { id => $message_id, rejected => 0, confirmed => 1 };
+
+	    $cg_cli->RejectQueueMessage($message_id);
+
+	    if (!$cg_cli->isSuccess) {
+		$rejected_message->{error} = $cg_cli->getErrMessage;
+	    } else {
+		$rejected_message->{rejected} = 1;
+	    }
+
+	    push @$rejected_messages, $rejected_message;
+	}
+    }
+
+    $c->stash->{rejected_messages} = $rejected_messages;
+}
+
+
+=head2 release_all
+
+  Release all queues
+
+=cut
+
+sub release_all :LocalRegex('^release_all') {
+    my ( $self, $c ) = @_;
+
+    my $released_queues = [];
+
+    if ($c->request->method eq 'POST' &&
+	$c->request->param('confirm_release_1') &&
+	$c->request->param('confirm_release_2') ) {
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	my $queues = $cg_cli->ListDomains();
+
+	if (!$cg_cli->isSuccess) {
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	for my $queue (@$queues) {
+	    my $released_queue = { id => $queue, released => 0, confirmed => 1 };
+
+	    $cg_cli->ReleaseSMTPQueue($queue);
+
+	    if (!$cg_cli->isSuccess) {
+		$released_queue->{error} = $cg_cli->getErrQueue;
+	    } else {
+		$released_queue->{released} = 1;
+	    }
+
+	    push @$released_queues, $released_queue;
+	}
+    }
+
+    $c->stash->{released_queues} = $released_queues;
 }
 
 =head1 AUTHOR

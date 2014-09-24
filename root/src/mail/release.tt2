@@ -1,0 +1,28 @@
+<div class="release-messages">
+  <form method="post" action="[% c.uri_for('release' ) %]">
+    <p>
+      <label for="queue">Find queue (domain) to release</label>
+    </p>
+
+    <p>
+      <input id="queue" name="queue" type="text" value="" />
+    </p>
+
+    <p>
+      <input id="find-to-release-submit" name="find-to-relesase-submit" type="submit" value="Find" />
+    </p>
+
+  </form>
+  <div class="clear-float" > </div>
+</div>
+
+[% IF queue_does_not_exist %]
+  <p>Queue not found</p>
+[% END %]
+
+
+[% IF mail_released == 1%]
+  <p>Mail released</p>
+[% ELSIF mail_released == -1 %]
+  <p>Mail NOT released</p>
+[% END %]

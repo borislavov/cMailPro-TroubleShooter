@@ -1,0 +1,33 @@
+<div class="release-single-queue">
+  <form method="post" action="[% c.uri_for('release/' _ released_queue.id ) %]">
+    <p>
+      <input id="confirm_release-1" name="confirm_release_1" type="checkbox" value="1" />
+    </p>
+    <p>
+      <label for="config_release-1">Really release queue [% released_queue.id %]</label>
+    </p>
+
+    <div class="clear-float" > </div>
+    <p>
+      <input id="confirm_release-2" name="confirm_release_2" type="checkbox" value="1" />
+    </p>
+    <p>
+      <label for="config_release-2">Yes, really, really release queue [% released_queue.id %]</label>
+    </p>
+    
+    
+    <div class="clear-float" > </div>
+    <p>
+      <input id="release-submit" name="release-submit" type="submit" value="Release" />
+    </p>
+  </form>
+
+  <div class="clear-float" > </div>
+  [% IF released_queue.confirmed %]
+    [% IF released_queue.released  %]
+      <p>Queue [% released_queue.id %] released </p>
+    [% ELSE %]
+      <p>Unable to release the queue from the queue. </p>
+    [% END %]
+  [% END %]
+</div>

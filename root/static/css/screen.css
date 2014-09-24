@@ -268,7 +268,8 @@ p {
     color: red;
 }
 
-
+.release-queues p,
+.release-single-queue p,
 .reject-single-message p,
 .reject-messages p,
 .release-messages p {
