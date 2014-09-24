@@ -2,6 +2,11 @@
 <p>Landing page</p>
 
 <div class="content-item">
+    <p><a href="[% c.uri_for('/mail/messages'); %]">Queue messages</a>:[% queue_message_count %]</p>
+</div>
+
+
+<div class="content-item">
     <p><a href="[% c.uri_for('/domains'); %]">Domains</a>:[% num_domains %]</p>
 </div>
 

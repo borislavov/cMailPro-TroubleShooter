@@ -29,6 +29,16 @@ sub begin :Private {
 }
 
 
+sub extract_queue_message_count :Private {
+    my ( $self, $c ) = @_;
+
+    my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+    my $messages = $cg_ts_api->fetch('/message_count');
+
+    $c->stash->{queue_message_count} = $messages->{message_count}  || 0;
+}
+
+
 sub extract_blacklisted_ips :Private {
     my ( $self, $c ) = @_;
 
@@ -346,6 +356,7 @@ sub index :Path :Args(0) {
     $c->forward( 'extract_debug_ips' );
     $c->forward( 'extract_tmp_blacklisted_ips' );
     $c->forward( 'extract_tmp_client_ips' );
+    $c->forward( 'extract_queue_message_count' );
 }
 
 =head2 default
