@@ -256,6 +256,7 @@ p {
 
 }
 
+.account-change-password-wrapper p,
 .account-verify-password-wrapper p {
     float: left;
 }
@@ -268,6 +269,7 @@ p {
     color: red;
 }
 
+.change-password p,
 .release-queues p,
 .release-single-queue p,
 .reject-single-message p,

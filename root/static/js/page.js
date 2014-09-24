@@ -18,6 +18,10 @@ window.addEvent('domready', function() {
 	});
     });
 
+    if ($('account-change-password-form')) {
+	xhr_on_change_password();
+    }
+
     if ($('account-verify-password-form')) {
 	$('account-verify-password-form').addEvent('submit', function(e) {
 	    e.stop();
@@ -73,3 +77,60 @@ window.addEvent('domready', function() {
 	});
     }
 });
+
+function xhr_on_change_password() {
+    if ($('account-change-password-form')) {
+	$('account-change-password-form').addEvent('submit', function(e) {
+	    e.stop();
+	    var data  = $('account-change-password-form');
+	    data = $(data).toQueryString(); //.parseQueryString();
+
+	    var xhr = new Request.JSON({
+		url: $('account-change-password-form').get('action'),
+		method: 'post',
+		data: data,
+		onSuccess: function(responseJSON, responseText) {
+
+		    if (!responseJSON) {
+
+			reponseJSON = JSON.decode(responseText);
+
+			if (!responseJSON) {
+			    $('account-change-password-result').set('text', 'Unable to change password.');
+			    return;
+			}
+		    }
+
+		    if (!responseJSON.change_account_password) {
+			$('account-change-password-result').set('text', 'Unable to change password.');
+			return;
+		    }
+		    var result = responseJSON.change_account_password;
+
+		    $('account-change-password-result').set('text', result);
+
+		    if (/^valid$/i.test(result)) {
+			$('account-change-password-result').addClass('account-change-password-result-valid')
+			$('account-change-password-result').removeClass('account-change-password-result-invalid')
+		    } else {
+			$('account-change-password-result').addClass('account-change-password-result-invalid')
+			$('account-change-password-result').removeClass('account-change-password-result-valid')
+		    }
+		},
+
+		onError: function() {
+		    $('account-change-password-result').set('text', 'Unable to change password.');
+		},
+
+		onFailure: function() {
+		    $('account-change-password-result').set('text', 'Unable to change password');
+		},
+	    });
+
+	    $('account-change-password-result').removeClass('account-change-password-result-invalid')
+	    $('account-change-password-result').removeClass('account-change-password-result-valid')
+	    $('account-change-password-result').set('text', 'Changing…');
+	    xhr.send(data);
+	});
+    }
+}

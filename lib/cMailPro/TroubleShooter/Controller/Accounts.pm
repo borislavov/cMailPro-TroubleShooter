@@ -225,6 +225,69 @@ sub verify_password :LocalRegex("^~verify_password((/)*(.*)/(.*))*") {
     }
 }
 
+
+sub change_password :LocalRegex("^~change_password((/)*(.*)/(.*))*") {
+    my ( $self, $c ) = @_;
+
+    my $account = $c->request->captures->[3].'@'.$c->request->captures->[2];
+    $account = ($account eq '@') ? '' : $account;
+
+    my ( $password, $confirm_password );
+
+    if ($c->request->method eq "POST") {
+	$account = $c->request->param("account") unless $account;
+	$password = $c->request->param("password");
+	$confirm_password = $c->request->param("password-confirm");
+    }
+
+    $c->stash->{account} = $account;
+
+    # Just render the form
+    if (!$account) {
+	$c->detach( "Root", "end");
+    }
+
+    # Render with error
+    if ($c->request->method eq "POST"  &&
+	( $password ne $confirm_password) ) {
+	$c->stash->{error_msg} = [ "Passwords do not match" ] ;
+	$c->stash->{change_account_password} = "Passwords do not match";
+	$c->detach( "Root", "end");
+    }
+
+    my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+    if (!$cg_cli) {
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    if ($account && $password) {
+	my $change_account = $cg_cli->UpdateAccountSettings("$account", { Password => $password });
+
+	if (!$cg_cli->isSuccess) {
+
+	    # Error code 513 is for invalid user
+	    # Error code 512 is for invalid domain
+	    if ($cg_cli->getErrCode != 513 &&
+		$cg_cli->getErrCode != 512) {
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    } else {
+		$c->stash->{error_msg} = [ "Invalid account" ] ;
+	    }
+	}
+
+	$c->stash->{change_account_password} = $change_account ? "Password changed" : "Password not changed";
+    }
+}
+
 =head2 search
 
     Search for an account.

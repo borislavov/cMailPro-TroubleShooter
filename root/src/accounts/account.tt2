@@ -23,6 +23,32 @@
     </form>
   </div>
 
+
+  <div class="account-change-password-wrapper">
+    <form id="account-change-password-form" method="post" action="[% c.uri_for('/accounts/~change_password/'_ domain _ '/' _ account); %]" >
+      <p>
+	<label for="password">Change Password</label>
+      </p>
+      <p>
+	<input id="password" name="password" type="password" />
+      </p>
+      <div class="clear-float" > </div>
+
+      <p>
+	<label for="password-confirm">Confirm Password</label>
+      </p>
+      <p>
+	<input id="password-confirm" name="password-confirm" type="password" />
+      </p>
+
+      <p>
+	<input type="submit" name="submit" value="Change password" />
+      </p>
+      <p id="account-change-password-result"> </p>
+      <div class="clear-float"> </div>
+    </form>
+  </div>
+
   <h2>Enabled services</h2>
 
   <div class="account_enabled_services">
