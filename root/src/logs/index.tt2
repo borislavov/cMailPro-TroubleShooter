@@ -1,0 +1,29 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+	Topic
+      </th>
+      <th>
+	Number of logs
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR o IN logs_overview %]
+    <tr>
+      <td>
+	<a href="[% c.uri_for('/logs/topic/' _ o.topic ); %]">[% o.topic %]</a>
+      </td>
+      <td>
+      [% o.logs %]
+      </td>
+    </tr>
+    [% END %]
+    <tr>
+      <td colspan="2">
+	Total: [% total_logs %]
+      </td>
+    </tr>
+  </tbody>
+</table>

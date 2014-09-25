@@ -1,0 +1,31 @@
+<p>[% log_topic %]</p>
+<table>
+  <thead>
+    <tr>
+      <th>
+	Log file
+      </th>
+      <th>
+	Size
+      </th>
+      <td>
+      Download
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR t IN logs_by_topic %]
+    <tr>
+      <td>
+	<a href="[% c.uri_for('/logs/file/' _ t  ); %]">[% t %]</a>
+      </td>
+      <td>
+      size
+      </td>
+      <td>
+       <a href="#">download</a>
+      </td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>

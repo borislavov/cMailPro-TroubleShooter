@@ -1,0 +1,10 @@
+<p>Filename: [% log_file %] </p>
+
+[% FOR f IN log_file_contents %] 
+  <p>
+    [% FILTER html%]	
+     [% f %]
+    [% END %]
+  </p>
+[%END%]
+

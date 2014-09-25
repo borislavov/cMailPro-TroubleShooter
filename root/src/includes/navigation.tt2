@@ -53,7 +53,7 @@
 	  Logs
 	</div>
 	<ul class="navigation-topic-items">
-	  <li class="navigation-item">Logs overview/statistics</li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/logs'); %]">Logs overview/statistics</a></li>
 	  <li class="navigation-item">Realtime lgos</li>
 	  <li class="navigation-item">Logs by date</li>
 	  <li class="navigation-item">Logs by topic</li>
