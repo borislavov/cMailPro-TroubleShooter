@@ -1,3 +1,18 @@
-[% FOR d IN domains %]
-<div class="content-item domain"><a href="[% c.uri_for('/domains/' _ d); %]">[% d %]</a></div>
-[% END %]
+<table>
+  <thead>
+    <tr>
+      <th>
+	Domain
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR d IN domains %]
+    <tr>
+      <td>
+	<a href="[% c.uri_for('/domains/' _ d ); %]">[% d %]</a>
+      </td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
