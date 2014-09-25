@@ -9,11 +9,14 @@ use CGI;
 use JSON;
 use File::Find::Rule;
 use File::Slurp;
+use File::Basename;
+use Path::Class;
 
-our $VERSION = '0.3';
+our $VERSION = '0.4';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
+our $logs_dir = "/var/CommuniGate/SystemLogs/";
 
 sub main {
     my $q = CGI->new;
@@ -42,6 +45,20 @@ sub main {
 	$render_data = message_exists($message);
     } elsif ($path =~ m/message_count$/) {
 	$render_data = message_count();
+    } elsif ($path =~ m/logs\/topics$/ || $path =~ m/logs(\/)*$/) {
+	$render_data = logs_topics();
+    } elsif (@captured = $path =~ m/logs\/by_topic\/(.*)$/) {
+	my $topic = $captured[0];
+
+	$render_data = logs_by_topic($topic);
+    } elsif (@captured = $path =~ m/logs\/file\/(.*)$/) {
+	my $log = $captured[0];
+
+	$render_data = logs_file($log);
+    } elsif (@captured = $path =~ m/logs\/count\/(.*)$/) {
+	my $topic = $captured[0];
+
+	$render_data = logs_count($topic);
     }
 
     render($q, $render_data);
@@ -138,6 +155,100 @@ sub messages {
     }
 
     return { messages => \@messages };
+}
+
+
+# https://IP:port/cgi/this.cgi/logs/topics
+sub logs_topics {
+
+    my @dirs = sort(File::Find::Rule->directory->in($logs_dir));
+    my @topics;
+
+    foreach my $d (@dirs) {
+
+	if ($d eq $logs_dir || ($d."/") eq $logs_dir) {
+	    $d = "SystemLogs";
+	}
+
+	$d =~ s/$logs_dir//;
+
+	push @topics, $d
+    }
+
+
+    return { logs => { topics  => \@topics } };
+}
+
+# https://IP:port/cgi/this.cgi/logs/by_topic
+sub logs_by_topic {
+    my $topic = shift;
+    my $json = {};
+    my @dir;
+
+    if ( $topic eq 'SystemLogs') {
+	push @dir, $logs_dir;
+    } else {
+	@dir = File::Find::Rule->directory()->name($topic)->in($logs_dir);
+    }
+
+    my @logs;
+
+    if ($dir[0]) {
+	my @files = sort(File::Find::Rule->file->name("*.log")->maxdepth(1)->in($dir[0]));
+
+	for my $f ( @files ) {
+	    $f =~ s/$logs_dir//;
+	    push @logs, $f;
+	}
+
+	$json = { logs => { by_topic => { topic => $topic, logs => \@logs } } };
+    }
+
+    return $json;
+
+}
+
+# https://IP:port/cgi/this.cgi/logs/file/<filename>
+sub logs_file {
+    my $file = shift;
+    my $json  = { };
+
+    my $dir = dirname($file);
+    $file = basename($file);
+
+    if ($dir ne '.') {
+	$dir = dir($logs_dir, $dir) ;
+    } else {
+	$dir = $logs_dir;
+    }
+
+    my @file = File::Find::Rule->file()->name($file)->in($dir);
+    if ($file[0]) {
+	my @data = read_file($file[0], binmode => ':utf8');
+
+	$json = { logs => { file => \@data } };
+    }
+
+    return $json;
+}
+
+
+# https://IP:port/cgi/this.cgi/logs/count/<topic>
+sub logs_count {
+    my $topic = shift;
+    my $dir = $logs_dir;
+    my $depth = 3;
+
+    if ($topic && $topic eq 'SystemLogs') {
+	$depth = 1;
+    } elsif ($topic) {
+	$dir = dir($logs_dir, $topic);
+    }
+
+    my @files = File::Find::Rule->file()->name("*.log")->maxdepth($depth)->in($dir);
+
+    return { logs => { count => { topic => $topic, count => scalar(@files) } } } ;
+
 }
 
 sub render {
