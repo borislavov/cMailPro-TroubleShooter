@@ -7,6 +7,9 @@
       <th>
 	Domain
       </th>
+      <th>
+	Accounts
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -14,6 +17,9 @@
     <tr>
       <td>
 	<a href="[% c.uri_for('/domains/' _ d ); %]">[% d %]</a>
+      </td>
+      <td>
+	<a href="[% c.uri_for('/accounts/~search/' _ d ); %]">[% d %]</a>
       </td>
     </tr>
     [% END %]
