@@ -67,7 +67,7 @@ sub message {
 
     my @file = File::Find::Rule->file()->name($message.".msg")->in($queue_dir);
     if ($file[0]) {
-	my @data = read_file($file[0]);
+	my @data = read_file($file[0], binmode => ':utf8');
 
 	return { message => \@data };
     }

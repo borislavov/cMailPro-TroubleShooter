@@ -2,6 +2,7 @@ package cMailPro::TroubleShooter::Model::CommuniGate::cMailProTSAPI;
 use strict;
 use warnings;
 
+use Encode;
 use Class::C3::Adopt::NEXT;
 use JSON;
 use LWP::UserAgent;
@@ -61,7 +62,8 @@ sub fetch {
     if ($res && $res->is_success) {
 	$json = decode_json $res->content;
 	if ($json->{response}) {
-	    $json = decode_json $json->{response};
+	    $json->{response} = encode_utf8($json->{response});
+	    $json = from_json ($json->{response});
 	} else {
 	    $json = { error => "cMailProTSAPI Model: No response received from CGI API script." };
 	}

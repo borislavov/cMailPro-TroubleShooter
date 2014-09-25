@@ -24,6 +24,8 @@
 </thead>
 <tbody>
 
+[% USE DecodeMailHeader %]
+
 [% FOR m IN messages %] 
 <tr>
   <td>
@@ -39,18 +41,24 @@
   </td>
   <td>
     [% FILTER html %]
+    [% FILTER $DecodeMailHeader %]
     [% m.from %]
+    [% END %]
     [% END %]
   </td>
 
   <td>
     [% FILTER html%]
+    [% FILTER $DecodeMailHeader %]
     [% m.to %]
+    [% END %]
     [% END %]
   </td>
   <td>
    [% FILTER html %]
+   [% FILTER $DecodeMailHeader %]
    [% m.subject %]
+   [% END %]
    [% END %]
   </td>
 </tr>
