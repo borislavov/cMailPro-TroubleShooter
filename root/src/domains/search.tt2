@@ -15,6 +15,4 @@
     </form>
 </div>
 
-[% FOR d IN domains %]
-<div class="content-item domain"><a href="[% c.uri_for('/domains/' _ d); %]">[% d %]</a></div>
-[% END %]
+[% INCLUDE domains/index.tt2 %]

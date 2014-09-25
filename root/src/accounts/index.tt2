@@ -1,3 +1,6 @@
+[%# Listing is included in accounts/search.tt2. %]
+[%# Careful with edits and layout. %]
+
 <table>
   <thead>
     <tr>

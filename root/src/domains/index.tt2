@@ -1,3 +1,6 @@
+[%# Listing is included in domains/search.tt2. %]
+[%# Careful with edits and layout. %]
+
 <table>
   <thead>
     <tr>
