@@ -1,7 +1,36 @@
-[% FOR a IN accounts %]
-<div class="content-item account">
-  <p>[% a.domain %]</p>
-  <p><a href="[% c.uri_for('/accounts/' _ a.domain _ '/' _ a.account ); %]">[% a.account %]</a></p>
-  <p>[% a.type %]</p>
-</div>
-[% END %]
+<table>
+  <thead>
+    <tr>
+      <th>
+	Account
+      </th>
+      <th>
+	Domain
+      </th>
+      <th>
+	Type
+      </th>
+      <th>
+	Full account name
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR a IN accounts %]
+    <tr>
+      <td>
+	<a href="[% c.uri_for('/accounts/' _ a.domain _ '/' _ a.account ); %]">[% a.account %]</a>
+      </td>
+      <td>
+	<a href="[% c.uri_for('/domains/' _ a.domain ); %]">[% a.domain %]</a>
+      </td>
+      <td>
+	[% a.type%]
+      </td>
+      <td>
+	[% a.account %]@[% a.domain %]
+      </td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
