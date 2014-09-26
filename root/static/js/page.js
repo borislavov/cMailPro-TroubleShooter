@@ -22,6 +22,12 @@ window.addEvent('domready', function() {
 	xhr_on_change_password();
     }
 
+    if ($('realtime-log-wrapper')) {
+	var period_el = $('realtime-refresh');
+	var period=(parseInt($(period_el).get('value'))*1000) || 30000;
+	xhr_realtime_logs.periodical(period);
+    }
+
     if ($('account-verify-password-form')) {
 	$('account-verify-password-form').addEvent('submit', function(e) {
 	    e.stop();
@@ -132,5 +138,57 @@ function xhr_on_change_password() {
 	    $('account-change-password-result').set('text', 'Changing…');
 	    xhr.send(data);
 	});
+    }
+}
+
+
+function xhr_realtime_logs() {
+    if ($('realtime-log-wrapper')) {
+	var seek_el = $('realtime-seek');
+	var seek = (parseInt(seek_el.get('value'))) || 0;
+	var xhr = new Request.JSON({
+	    url: window.location.href + ( seek ? '/seek/'+seek : ''),
+	    method: 'get',
+	    onSuccess: function(responseJSON, responseText) {
+		if (!responseJSON) {
+
+		    reponseJSON = JSON.decode(responseText);
+
+		    if (!responseJSON) {
+			return;
+		    }
+		}
+
+		var seek_el = $('realtime-seek');
+		if (seek_el) {
+		    seek_el.set('value', responseJSON.realtime.size);
+		}
+
+		var size_el = $('realtime-size');
+		if (size_el) {
+		    size_el.set('text', responseJSON.realtime.size);
+		}
+
+		var p = new Element('p', {
+		    'class': 'realtime-log-new-data',
+		    text: 'New data at '+new Date(),
+		});
+
+		p.inject($('realtime-log-wrapper'), 'bottom');
+
+		responseJSON.realtime.data.each(function(item) {
+		    var p = new Element('p', {
+			'class': 'realtime-log',
+			text: item,
+		    });
+
+		    p.inject($('realtime-log-wrapper'), 'bottom');
+		});
+
+		var scroll = new Fx.Scroll('realtime-log-wrapper').toBottom();
+	    }
+	});
+
+	xhr.send();
     }
 }

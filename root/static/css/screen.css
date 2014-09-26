@@ -277,3 +277,14 @@ p {
 .release-messages p {
     float: left;
 }
+
+.realtime-log-wrapper {
+    min-height: 400px;
+    height: 450px;
+    overflow-y:scroll;
+}
+
+.realtime-log-new-data {
+    padding: 5px;
+    border-bottom: 1px dashed black;
+}

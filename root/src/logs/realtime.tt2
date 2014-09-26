@@ -1,0 +1,30 @@
+<table>
+  <thead>
+    <tr>
+      <th>
+	Topic
+      </th>
+      <th>
+       Realtime
+      </th>
+      <th>
+      Logs
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR t IN realtime_topics %]
+    <tr>
+      <td>
+	[% t %]
+      </td>
+      <td>
+      	<a href="[% c.uri_for('/logs/realtime/' _ t ); %]">Current log file</a>
+      </td>
+      <td>
+      	<a href="[% c.uri_for('/logs/topic/' _ t ); %]">Previous logs</a>
+      </td>
+    </tr>
+    [% END %]
+</tbody>
+</table>

@@ -115,6 +115,58 @@ sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
     }
 }
 
+=head2 realtime
+
+  Realtime logs
+
+=cut
+
+sub realtime :LocalRegexp('^(?!(~.*$))realtime$') {
+    my ( $self, $c ) = @_;
+
+    my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+    my $topics_api = $cg_ts_api->fetch('/logs/topics');
+
+    if ( $topics_api->{error} ) {
+	$c->response->status(500);
+	$c->stash->{error_msg} = [ $topics_api->{error} ];
+	$c->stash->{status_msg} = ["Internal Server Error. CGI API communication error."];
+    }
+
+
+    $c->stash->{realtime_topics} = $topics_api->{logs}->{topics};
+}
+
+
+=head2 realtime_single_topic
+
+  Realtime logs
+
+=cut
+
+sub realtime_single_topic :LocalRegexp('^(?!(~.*$))realtime/([a-zA-Z0-9]+)(\/)*(seek\/([0-9]+))*') {
+    my ( $self, $c ) = @_;
+
+    my $topic = $c->request->captures->[1];
+    my $seek = $c->request->captures->[4];
+    my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+    my $rt_api = $cg_ts_api->fetch('/logs/realtime/'. $topic .($seek ? '/seek/'.$seek : ''));
+
+    if ($rt_api && $rt_api->{logs}->{realtime}) {
+        $c->stash->{realtime} = $rt_api->{logs}->{realtime};
+    } else {
+	$c->response->status(404);
+	$c->stash->{error_msg} = [ "Topic " . $topic." not found" ];
+    }
+
+    if ( $rt_api->{error} ) {
+	$c->response->status(500);
+	$c->stash->{error_msg} = [ $rt_api->{error} ];
+	$c->stash->{status_msg} = ["Internal Server Error. CGI API communication error."];
+    }
+}
+
+
 
 =head1 AUTHOR
 
