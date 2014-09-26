@@ -10,9 +10,10 @@ use JSON;
 use File::Find::Rule;
 use File::Slurp;
 use File::Basename;
+use File::stat;
 use Path::Class;
 
-our $VERSION = '0.4';
+our $VERSION = '0.5';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -57,6 +58,8 @@ sub main {
 	$render_data = logs_file($log);
     } elsif (@captured = $path =~ m/logs\/count\/(.*)$/) {
 	my $topic = $captured[0];
+
+	$topic = 'SystemLogs' unless $topic;
 
 	$render_data = logs_count($topic);
     }
@@ -197,8 +200,9 @@ sub logs_by_topic {
 	my @files = sort(File::Find::Rule->file->name("*.log")->maxdepth(1)->in($dir[0]));
 
 	for my $f ( @files ) {
+	    my $stat = stat($f);
 	    $f =~ s/$logs_dir//;
-	    push @logs, $f;
+	    push @logs, { log => $f, size => $stat->size };
 	}
 
 	$json = { logs => { by_topic => { topic => $topic, logs => \@logs } } };
@@ -245,9 +249,15 @@ sub logs_count {
 	$dir = dir($logs_dir, $topic);
     }
 
+    my $size = 0 ;
     my @files = File::Find::Rule->file()->name("*.log")->maxdepth($depth)->in($dir);
 
-    return { logs => { count => { topic => $topic, count => scalar(@files) } } } ;
+    for my $f (@files) {
+	my $stat = stat($f);
+	$size += $stat->size;
+    }
+
+    return { logs => { count => { topic => $topic, count => scalar(@files), size => $size } } } ;
 
 }
 
