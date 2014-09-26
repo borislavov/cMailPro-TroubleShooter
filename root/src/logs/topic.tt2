@@ -23,7 +23,7 @@
       size
       </td>
       <td>
-       <a href="#">download</a>
+       <a href="[% c.uri_for('/logs/download/' _ t ); %]">download</a>
       </td>
     </tr>
     [% END %]
