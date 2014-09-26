@@ -7,6 +7,9 @@
       <th>
 	Number of logs
       </th>
+      <th>
+      Size
+      </th>
     </tr>
   </thead>
   <tbody>
@@ -18,11 +21,22 @@
       <td>
       [% o.logs %]
       </td>
+      <td>
+      [% size_in_bytes = o.size %]
+      [% PROCESS includes/bytes.tt2 %]
+      </td>
     </tr>
     [% END %]
     <tr>
-      <td colspan="2">
-	Total: [% total_logs %]
+      <td colspan="1">
+	Total
+      </td>
+      <td>
+	[% total_logs %]
+      </td>
+      <td>
+      [% size_in_bytes = total_size %]
+      [% PROCESS includes/bytes.tt2 %]
       </td>
     </tr>
   </tbody>

@@ -17,13 +17,14 @@
     [% FOR t IN logs_by_topic %]
     <tr>
       <td>
-	<a href="[% c.uri_for('/logs/file/' _ t  ); %]">[% t %]</a>
+	<a href="[% c.uri_for('/logs/file/' _ t.log  ); %]">[% t.log %]</a>
       </td>
       <td>
-      size
+      [% size_in_bytes = t.size %]
+      [% PROCESS includes/bytes.tt2 %]
       </td>
       <td>
-       <a href="[% c.uri_for('/logs/download/' _ t ); %]">download</a>
+       <a href="[% c.uri_for('/logs/download/' _ t.log ); %]">download</a>
       </td>
     </tr>
     [% END %]
