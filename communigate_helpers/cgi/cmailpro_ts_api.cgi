@@ -12,8 +12,9 @@ use File::Slurp;
 use File::Basename;
 use File::stat;
 use Path::Class;
+use POSIX qw/strftime/;
 
-our $VERSION = '0.5';
+our $VERSION = '0.6';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -62,6 +63,13 @@ sub main {
 	$topic = 'SystemLogs' unless $topic;
 
 	$render_data = logs_count($topic);
+    } elsif (@captured = $path =~ m/logs\/realtime\/([a-zA-Z0-9]+)(\/)*(seek\/([0-9]+))*$/) {
+	my $topic = $captured[0];
+	my $seek_bytes = $captured[3] || 0;
+
+	$topic = 'SystemLogs' unless $topic;
+
+	$render_data = logs_realtime($topic,$seek_bytes);
     }
 
     render($q, $render_data);
@@ -259,6 +267,60 @@ sub logs_count {
 
     return { logs => { count => { topic => $topic, count => scalar(@files), size => $size } } } ;
 
+}
+
+# https://IP:port/cgi/this.cgi/logs/realtime/<topic>(/seek/<bytes>)
+sub logs_realtime {
+    my $topic = shift;
+    my $seek_bytes = shift || 0;
+    my $json  = { };
+    my @dir;
+    my @data;
+
+    my $current_log = strftime("%Y-%m-%d",localtime()).".log";
+
+    if ( $topic eq 'SystemLogs') {
+	push @dir, $logs_dir;
+    } else {
+	@dir = File::Find::Rule->directory()->name($topic)->in($logs_dir);
+    }
+
+    $json = { log => $topic , dir => \@dir};
+
+    if ($dir[0]) {
+	my @files = sort(File::Find::Rule->file->name($current_log)->maxdepth(1)->in($dir[0]));
+
+	if ($files[0]) {
+	    my $f = $files[0];
+
+	    open(my $FH, "<:encoding(UTF-8)", $f) || return {};
+
+	    if ($seek_bytes) {
+		seek($FH, $seek_bytes, 0);
+	    }
+
+	    while (my $line = <$FH>) {
+		push @data, $line;
+	    }
+
+	    close($FH);
+
+	    my $stat = stat($f);
+	    $seek_bytes = $stat->size;
+
+	    $f =~ s/$logs_dir//;
+
+	    $json = { logs => { realtime => { topic => $topic,
+					      log => $f,
+					      data => \@data,
+					      size => $seek_bytes
+				} } };
+	} else {
+	    $json = { logs => { realtime => "No realtime logs for topic $topic" }  };
+	}
+    }
+
+    return $json;
 }
 
 sub render {
