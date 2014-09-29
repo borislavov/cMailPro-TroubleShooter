@@ -122,7 +122,6 @@ sub domain :LocalRegex("^(?!(~.*$))(.*)") {
 
     $account_defaults =
 	$c->model("CommuniGate::CLI")->get_enabled_services($account_defaults->{AccessModes});
-    $c->log->debug("Defaults ac ", Dumper $account_defaults);
 
     $c->stash->{account_defaults} = $account_defaults;
 

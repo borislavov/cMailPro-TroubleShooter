@@ -34,7 +34,6 @@ sub index :Path :Args(0) {
     my $total_size = 0;
 
     for my $t (@{$topics->{logs}->{topics}}) {
-	$c->log->debug("T ".Dumper $t);
 	my $count = $cg_ts_api->fetch('/logs/count/'.$t);
 	my $size = $count->{logs}->{count}->{size};
 	$total_size += $size;
