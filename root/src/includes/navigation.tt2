@@ -54,7 +54,7 @@
 	</div>
 	<ul class="navigation-topic-items">
 	  <li class="navigation-item"><a href="[% c.uri_for('/logs'); %]">Logs overview/statistics</a></li>
-	  <li class="navigation-item"><a href="[% c.uri_for('/logs/realtime')%]">Realtime logs<a/></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/logs/realtime')%]">Realtime logs</a></li>
 	  <li class="navigation-item">Logs by date</li>
 	  <li class="navigation-item">Logs by topic</li>
 	  <li class="navigation-item">Search logs</li>
@@ -94,8 +94,8 @@
 	</div>
 	<ul class="navigation-topic-items">
 	  <li class="navigation-item"><a href="[% c.uri_for('/mail/'); %]">Mail queue</a></li>
-	  <li class="navigation-item"><a href="[% c.uri_for('/mail/release');  %]">Release/send mail queue</li>
-	  <li class="navigation-item"><a href="[% c.uri_for('/mail/release_all');  %]">Release/send all mail queues</li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/mail/release');  %]">Release/send mail queue</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/mail/release_all');  %]">Release/send all mail queues</a></li>
 	  <li class="navigation-item"><a href="[% c.uri_for('/mail/reject'); %]">Reject a message from the queue</a></li>
 	  <li class="navigation-item"><a href="[% c.uri_for('/mail/reject_all'); %]">Reject all messages in the queue</a></li>
 	</ul>
