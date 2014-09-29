@@ -361,9 +361,13 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 	}
 
 	foreach my $acc (keys $accounts) {
+	    my $acc_type =
+		$c->model("CommuniGate::CLI")->get_account_type($accounts->{$acc});
 
 	    if ( !$account ) {
-		push $found, { domain => $domain, account => $acc };
+		push $found, { domain => $domain,
+			       account => $acc,
+			       type => $acc_type };
 		next;
 	    }
 
@@ -371,15 +375,16 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 		if ( $domain =~ m/$account/ || $acc =~ m/$account/ ) {
 
 		    push $found, { domain => $domain,
-				   account => $acc
+				   account => $acc,
+				   type =>  $acc_type
 		    };
 		}
 	    } elsif ($acc_domain || $acc_user ) {
 		if ( $domain =~ m/$acc_domain/ || 
 		     $acc =~ m/$acc_user/ )  {
-
 		    push $found, { domain => $domain,
-				   account => $acc
+				   account => $acc,
+				   type => $acc_type
 		    };
 		}
 	    }
