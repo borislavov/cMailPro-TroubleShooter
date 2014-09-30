@@ -11,8 +11,9 @@ use Catalyst::Log;
 use base qw(Catalyst::Model Class::Accessor);
 
 __PACKAGE__->mk_accessors(qw|PeerAddr PeerPort SecureLogin login password|);
+__PACKAGE__->mk_ro_accessors(qw|account_types|);
 
-our $VERSION='0.4';
+our $VERSION='0.5';
 
 =head1 NAME
 
@@ -30,6 +31,15 @@ sub new {
   my $self = shift;
   
   $self = $self->next::method(@_);
+
+  $self->{account_types} = {
+      'macnt' => 'Multi-Mailbox',
+      'mdir'  => 'Maildir INBOX only',
+      'mbox' => 'Text INBOX only (mbox)',
+      'mslc' => 'Sliced INBOX only',
+      'other' =>'Unknown'
+  };
+
   $self->PeerAddr($self->PeerAddr || '127.0.0.1');
   $self->PeerPort($self->PeerPort || 106);
   $self->SecureLogin($self->SecureLogin || 1);
@@ -119,19 +129,13 @@ sub get_enabled_services {
 sub get_account_type {
     my ( $self, $raw_acc_type ) = @_;
 
-    my $accounts = {
-	'macnt' => 'Multi-Mailbox',
-	'mdir'  => 'Maildir INBOX only',
-	'mbox' => 'Text INBOX only (mbox)',
-	'mslc' => 'Sliced INBOX only',
-	'other' =>'Unknown'
-    };
+    my $acc_types = $self->account_types();
 
-    if (exists $accounts->{$raw_acc_type}) {
-	return $accounts->{$raw_acc_type};
+    if (exists $acc_types->{$raw_acc_type}) {
+	return $acc_types->{$raw_acc_type};
     }
 
-    return $accounts->{other};
+    return $acc_types->{other};
 }
 
 
