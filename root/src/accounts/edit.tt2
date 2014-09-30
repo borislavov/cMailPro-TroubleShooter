@@ -1,0 +1,146 @@
+<div class="account-settings">
+  <h2>Settings for account: [% account _ '@' _ domain %]</h2>
+  <form id="edit-account-form" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
+    <div class="edit-account-settings-wrapper">
+      <p>
+	<label for="account-type" >Type:</label>
+      </p>
+      <p>
+	<select disabled="disabled" id="account-type" name="account-type">
+	  [% account_types.delete('other'); %]
+	  [% FOR at IN account_types.keys %]
+	  <option value="[% at %]" [% acc_type == account_types.$at ? 'selected="selected"' : '' %] > [% account_types.$at %] </option>
+	  [% END %]
+	</select>
+      </p>
+      <div class="clear-float" > </div>
+      <p>Created: [% account_info.Created %] </p>
+      <div class="clear-float" > </div>
+      <p><label for="real_name">Real Name:</label></p>
+      <p>
+	<input type="text" id="real_name" name="real_name" value="[% account_settings.RealName %]" />
+      </p>
+      <div class="clear-float" > </div>
+      <p><label for="state">State/Province:</label></p>
+      <p>
+	<input type="text" name="state" value="[% account_settings.st %]" />
+      </p>
+      <div class="clear-float" > </div>
+      <p>
+	<label for="city">City:</label>
+      </p>
+      <p>
+	<input type="text" name="city" value="[% account_settings.l %]" />
+      </p>
+      <div class="clear-float" > </div>
+      <p>
+	<label for="unit">Unit: </label>
+      </p>
+      <p>
+	<input type="text" name="unit" value="[% account_settings.ou %]" />
+      </p>
+      <div class="clear-float" > </div>
+    </div>
+
+    <div class="account-change-password-wrapper">
+      <p>
+	<label for="password">Change Password</label>
+      </p>
+      <p>
+	<input id="password" name="password" type="password" />
+      </p>
+      <div class="clear-float" > </div>
+
+      <p>
+	<label for="password-confirm">Confirm Password</label>
+      </p>
+      <p>
+	<input id="password-confirm" name="password-confirm" type="password" />
+      </p>
+      <div class="clear-float"> </div>
+    </div>
+    <p>
+      <input type="submit" name="save_changes_acc_info" value="Save changes"  />
+    </p>
+  </form>
+
+  <h2>Enabled services</h2>
+
+  <form id="edit-account-services" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
+    <div class="account_enabled_services">
+
+      [% IF enabled_services.defined('Default')%]
+      [% default_services = enabled_services.Default %]
+      <p>
+	<input type="checkbox" name="account_services" value="Default" [% default_services ? 'checked="checked"' : '' %] />
+	<label>Default</label>
+      </p>
+      [% enabled_services.delete('Default') %]
+      [% END %]
+
+      [% FOREACH e IN enabled_services.keys.sort %]
+      [% en_srv = (enabled_services.$e ? 1 : 0 )%]
+      <p>
+	<input type="checkbox" name="account_services" value="[% e %]" [% en_srv ? 'checked="checked"' : '' %] [% default_services ? 'disableda="disabled"' : ''%] />
+	<label>[% e %]</label>
+      </p>
+      [% END %]
+    </div>
+    <div class="clear-float" > </div>
+    <p>
+      <input type="submit" name="save_changes_acc_services" value="Save changes"  />
+    </p>
+  </form>
+
+<h3>Last login</h3>
+[% IF account_info.LastLogin %]
+<p>Date: [% account_info.LastLogin %];  IP address: [% account_info.LastAddress %]</p>
+[% END %]
+
+[% IF account_info.PrevLogin %]
+<p>Date: [% account_info.PrevLogin %];  IP address: [% account_info.PrevLoginAddress %] </p>
+[% END %]
+
+[% IF NOT account_info.PrevLogin AND NOT account_info.LastLogin %]
+<p>N/A</p>
+[% END %]
+
+<h3>Failed login</h3>
+[% IF account_info.LastFailedLogin %]
+<p> Date: [% account_info.LastFailedLogin %]; IP address: [% account_info.LastFailedLoginAddress %]</p>
+[% ELSE %]
+<p>N/A</p>
+[% END %]
+
+<h2>All (effective) raw settings for account: [% account _ '@' _ domain %]</h2>
+
+<table class="account-settings-table" >
+<tbody>
+<tr>
+  <th>
+    Key
+  </th>
+  <th>
+    Value
+  </th>
+</tr>
+[% FOREACH s IN account_settings.keys.sort %]
+<tr>
+  <td>
+    [% s %]
+  </td>
+  <td>
+    [% val = account_settings.$s %]
+    [% IF NOT val.size %]
+        [% FOR v IN val.size %]
+	[% val.$v _ ',' %]
+	[% END %]
+    [% ELSE %]
+    [%  val %]
+    [% END %]
+  </td>
+</tr>
+[% END %]
+</tbody>
+</table>
+</div>

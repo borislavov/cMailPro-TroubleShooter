@@ -395,6 +395,66 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 }
 
 
+=head2 edit
+
+ Edit account information
+
+=cut
+
+sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
+    my ( $self, $c ) = @_;
+
+    my $account = $c->request->captures->[2];
+    my $domain = $c->request->captures->[1];
+
+    if ( $c->request->method eq 'POST') {
+	my $acc_settings = {};
+	my $param_settings = {
+	    real_name => 'RealName',
+	    state => 'st',
+	    city => 'l',
+	    unit => 'ou',
+	    password => 'Password'
+	};
+
+	foreach my $k (keys $param_settings) {
+	    if ( $k eq 'password' && $c->request->param('password') &&
+		 $c->request->param('confirm-password') &&
+		 ($c->request->param('password-confirm') eq $c->request->param('password') ) ) {
+		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
+	    } elsif ($c->request->param($k) ) {
+		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
+	    }
+	}
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$cg_cli->UpdateAccountSettings($account.'@'.$domain, $acc_settings);
+
+	if (!$cg_cli->isSuccess) {
+
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+    }
+
+    $c->forward( 'Accounts', 'account', $c->request->args );
+
+    $c->stash->{account_types} =
+	$c->model("CommuniGate::CLI")->account_types();
+}
+
 =head1 AUTHOR
 
 Ivaylo Valkov <ivaylo@e-valkov.org>

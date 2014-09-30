@@ -256,6 +256,7 @@ p {
 
 }
 
+.edit-account-settings-wrapper p,
 .account-change-password-wrapper p,
 .account-verify-password-wrapper p {
     float: left;
