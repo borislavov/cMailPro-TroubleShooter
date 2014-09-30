@@ -78,7 +78,7 @@
       [% END %]
       <p>
 	<input class="enabled_services_checkboxes" type="checkbox" name="account_services" id="account_services_default"  value="Default" />
-	<label>Domain default</label>
+	<label>Account defaults</label>
       </p>
 
       <p>

@@ -1,6 +1,6 @@
 <div class="domain-settings">
   <h1>Domain: [% domain %]</h1>
-  <h2>Enabled services</h2>
+  <h2>Enabled services <span><a class="edit-domain-button" href="[% c.uri_for('/domains/~edit/' _ domain ); %]">Edit</a></span></h2>
 
   <div class="domain_enabled_services">
 

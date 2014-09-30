@@ -187,6 +187,76 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 }
 
 
+=head2 edit
+
+ Edit domain information
+
+=cut
+
+sub edit :LocalRegex('^~edit(/)*(.*)') {
+    my ( $self, $c ) = @_;
+
+    my $domain = $c->request->captures->[1];
+
+    if ( $c->request->method eq 'POST') {
+	my $domain_settings = {};
+	my $param_settings = {
+	    account_defaults => 'AccessModes',
+	    domain_services => 'DomainAccessModes'
+	};
+
+	foreach my $k (keys $param_settings) {
+	    if ($k eq 'domain_services' && $c->request->param($k) ) {
+
+		my $all_none_default = 0;
+		my @services = $c->request->param($k);
+		my $array_size = scalar(@services)-1;
+
+		for my $s (0..$array_size) {
+		    my $srv = $services[$s];
+		    if ($srv eq 'Default' || $srv eq 'All' || $srv eq 'None') {
+			$all_none_default = $srv unless $all_none_default;
+			delete $services[$s];
+		    }
+		}
+
+		if ( !$all_none_default) {
+		    # 27: MobilePronto ; Larger tan 27 are enabled. 27
+		    # is always returned by CG. Hackish!
+		    push @{$domain_settings->{$param_settings->{$k}}}, 27;
+		    push @{$domain_settings->{$param_settings->{$k}}}, $c->request->param('domain_services');
+		} else {
+		    $domain_settings->{$param_settings->{$k}} = $all_none_default;
+		}
+	    }
+	}
+
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	$cg_cli->UpdateDomainSettings( domain => $domain, settings => $domain_settings);
+
+	 if (!$cg_cli->isSuccess) {
+
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+    }
+
+    $c->forward( 'Domains', 'domain', $c->request->args );
+}
+
+
 =head1 AUTHOR
 
 Ivaylo Valkov <ivaylo@e-valkov.org>

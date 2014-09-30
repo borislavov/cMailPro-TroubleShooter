@@ -1,0 +1,85 @@
+<div class="domain-settings">
+  <h1>Domain: [% domain %]</h1>
+  <h2>Enabled services</h2>
+
+  <form id="edit-domain-services" method="post" action="[% c.uri_for('/domains/~edit/'_ domain); %]" >
+    <div class="domain_enabled_services">
+
+      [% FOREACH e IN enabled_services.keys.sort %]
+      [% en_srv = (enabled_services.$e ? 1 : 0 )%]
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" name="domain_services" value="[% e %]" [% en_srv ? 'checked="checked"' : '' %] />
+	<label>[% e %]</label>
+      </p>
+      [% END %]
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" name="domain_services" id="domain_services_default"  value="Default" />
+	<label>Domain defaults</label>
+      </p>
+
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" id="domain_services_none" name="domain_services" value="None"/>
+	<label>None</label>
+      </p>
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" id="domain_services_all" name="domain_services" value="All" />
+	<label>All</label>
+      </p>
+    </div>
+    <div class="clear-float" > </div>
+    <p>
+      <input type="submit" name="save_changes_domain_services" value="Save changes"  />
+    </p>
+  </form>
+
+  <h2>Account list</h2>
+  [% FOREACH acc IN account_list.sort %]
+  <ul class="per_domain_account_list">
+    <li><a href="[% c.uri_for('/accounts/' _ domain _ '/' _ acc) %]">[% acc %]<a></li>
+  </ul>
+  [% END %]
+  <div class="clear-float"> </div>
+
+  <h2>Account Defaults</h2>
+  <div class="per_domain_account_defaults">
+
+    [% FOREACH acc IN account_defaults.keys.sort %]
+    <p>[% (account_defaults.$acc ? '+' : '-') _ ' ' _ acc %]</p>
+    [% END %]
+  </div>
+  <div class="clear-float"> </div>
+
+
+  <h2>All (effective) raw settings for domain: [% domain %]</h2>
+
+
+  <table class="domain-settings-table" >
+    <tbody>
+      <tr>
+	<th>
+	  Key
+	</th>
+	<th>
+	  Value
+	</th>
+      </tr>
+      [% FOREACH s IN domain_settings.keys.sort %]
+      <tr>
+	<td>
+	  [% s %]
+	</td>
+	<td>
+	  [% val = domain_settings.$s %]
+	  [% IF NOT val.size %]
+	  [% FOR v IN val.size %]
+	  [% val.$v _ ',' %]
+	  [% END %]
+	  [% ELSE %]
+	  [%  val %]
+	  [% END %]
+	</td>
+      </tr>
+      [% END %]
+    </tbody>
+  </table>
+</div>
