@@ -414,11 +414,34 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    state => 'st',
 	    city => 'l',
 	    unit => 'ou',
-	    password => 'Password'
+	    password => 'Password',
+	    account_services => 'AccessModes'
 	};
 
 	foreach my $k (keys $param_settings) {
-	    if ( $k eq 'password' && $c->request->param('password') &&
+	    if ($k eq 'account_services' && $c->request->param($k) ) {
+
+		my $all_none_default = 0;
+		my @services = $c->request->param($k);
+		my $array_size = scalar(@services)-1;
+
+		for my $s (0..$array_size) {
+		    my $srv = $services[$s];
+		    if ($srv eq 'Default' || $srv eq 'All' || $srv eq 'None') {
+			$all_none_default = $srv unless $all_none_default;
+			delete $services[$s];
+		    }
+		}
+
+		if ( !$all_none_default) {
+		    # 27: MobilePronto ; Larger tan 27 are enabled. 27
+		    # is always returned by CG. Hackish!
+		    push @{$acc_settings->{$param_settings->{$k}}}, 27;
+		    push @{$acc_settings->{$param_settings->{$k}}}, $c->request->param('account_services');
+		} else {
+		    $acc_settings->{$param_settings->{$k}} = $all_none_default;
+		}
+	    } elsif ( $k eq 'password' && $c->request->param('password') &&
 		 $c->request->param('confirm-password') &&
 		 ($c->request->param('password-confirm') eq $c->request->param('password') ) ) {
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);

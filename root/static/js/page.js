@@ -18,6 +18,10 @@ window.addEvent('domready', function() {
 	});
     });
 
+    if ($('edit-account-services')) {
+	enabled_services_checkboxes();
+    }
+
     if ($('account-change-password-form')) {
 	xhr_on_change_password();
     }
@@ -197,5 +201,56 @@ function xhr_on_verify_password () {
 	    $('account-verify-password-result').set('text', 'Verifying…');
 	    xhr.send(data);
 	});
+    }
+}
+
+function enabled_services_checkboxes() {
+    if ($('edit-account-services')) {
+	var default_services = $('account_services_default');
+	var all_services = $('account_services_all');
+	var none_services = $('account_services_none');
+
+	$(none_services).addEvent('click', function(e) {
+	    $$('.enabled_services_checkboxes').each(function(item) {
+		var id = $(item).get('id');
+		if (/_services_none/i.test(id)) {
+		    return;
+		}
+
+		$(item).set('checked', null);
+	    });
+	});
+
+	$(all_services).addEvent('click', function(e) {
+	    $$('.enabled_services_checkboxes').each(function(item) {
+		var id = $(item).get('id');
+		if (/_services_none/i.test(id) ||
+		    /_services_all/i.test(id) ||
+		    /_services_default/i.test(id)) {
+
+		    if(!/_services_all/i.test(id)) {
+			$(item).set('checked', null);
+		    }
+		    return;
+		}
+
+		$(item).set('checked', 'checked');
+	    });
+	});
+
+	$(default_services).addEvent('click', function(e) {
+	    $$('.enabled_services_checkboxes').each(function(item) {
+		var id = $(item).get('id');
+		if (/_services_default/i.test(id)) {
+		    if(!/_services_default/i.test(id)) {
+			$(item).set('checked', 'checked');
+		    }
+		    return;
+		}
+
+		$(item).set('checked', null);
+	    });
+	});
+
     }
 }

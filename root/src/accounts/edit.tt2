@@ -23,21 +23,21 @@
       <div class="clear-float" > </div>
       <p><label for="state">State/Province:</label></p>
       <p>
-	<input type="text" name="state" value="[% account_settings.st %]" />
+	<input type="text" id="state" name="state" value="[% account_settings.st %]" />
       </p>
       <div class="clear-float" > </div>
       <p>
 	<label for="city">City:</label>
       </p>
       <p>
-	<input type="text" name="city" value="[% account_settings.l %]" />
+	<input type="text" id="city" name="city" value="[% account_settings.l %]" />
       </p>
       <div class="clear-float" > </div>
       <p>
 	<label for="unit">Unit: </label>
       </p>
       <p>
-	<input type="text" name="unit" value="[% account_settings.ou %]" />
+	<input type="text" id="unit" name="unit" value="[% account_settings.ou %]" />
       </p>
       <div class="clear-float" > </div>
     </div>
@@ -69,22 +69,27 @@
   <form id="edit-account-services" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
     <div class="account_enabled_services">
 
-      [% IF enabled_services.defined('Default')%]
-      [% default_services = enabled_services.Default %]
-      <p>
-	<input type="checkbox" name="account_services" value="Default" [% default_services ? 'checked="checked"' : '' %] />
-	<label>Default</label>
-      </p>
-      [% enabled_services.delete('Default') %]
-      [% END %]
-
       [% FOREACH e IN enabled_services.keys.sort %]
       [% en_srv = (enabled_services.$e ? 1 : 0 )%]
       <p>
-	<input type="checkbox" name="account_services" value="[% e %]" [% en_srv ? 'checked="checked"' : '' %] [% default_services ? 'disableda="disabled"' : ''%] />
+	<input class="enabled_services_checkboxes" type="checkbox" name="account_services" value="[% e %]" [% en_srv ? 'checked="checked"' : '' %] />
 	<label>[% e %]</label>
       </p>
       [% END %]
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" name="account_services" id="account_services_default"  value="Default" />
+	<label>Domain default</label>
+      </p>
+
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" id="account_services_none" name="account_services" value="None"/>
+	<label>None</label>
+      </p>
+      <p>
+	<input class="enabled_services_checkboxes" type="checkbox" id="account_services_all" name="account_services" value="All" />
+	<label>All</label>
+      </p>
+
     </div>
     <div class="clear-float" > </div>
     <p>
