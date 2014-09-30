@@ -13,7 +13,7 @@ use base qw(Catalyst::Model Class::Accessor);
 __PACKAGE__->mk_accessors(qw|PeerAddr PeerPort SecureLogin login password|);
 __PACKAGE__->mk_ro_accessors(qw|account_types|);
 
-our $VERSION='0.5';
+our $VERSION='0.6';
 
 =head1 NAME
 
@@ -84,7 +84,6 @@ sub get_enabled_services {
 
     # $raw_services eq 'All'
     my $enabled_services = {
-	"Default" => 1,
 	'Mail' => 1, 'Relay' => 1, 'Signal' =>1, 'Mobile' => 1,
 	'TLS' => 1, 'POP' => 1, 'IMAP' => 1, 'MAPI' => 1,
 	'AirSync' => 1, 'SIP' => 1, 'WebMail' => 1, 'XIMSS' => 1,
@@ -108,9 +107,6 @@ sub get_enabled_services {
 	    }
 	}
     } elsif ($raw_services eq 'None') {
-	# Remove the default setting. It is not possible to decide
-	# what value it has.
-	delete $enabled_services->{Default};
 	for my $es (keys $enabled_services) {
 	    $enabled_services->{$es} = 0;
 	}

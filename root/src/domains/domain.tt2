@@ -4,11 +4,6 @@
 
   <div class="domain_enabled_services">
 
-    [% IF enabled_services.defined('Default')%]
-    <p>[% (enabled_services.Default ? '+' : '-') _ ' Default' %]</p>
-    [% enabled_services.delete('Default') %]
-    [% END %]
-
     [% FOREACH e IN enabled_services.keys.sort %]
     <p>[% (enabled_services.$e ? '+' : '-') _ ' ' _ e %]</p>
     [% END %]
@@ -26,11 +21,6 @@
 
   <h2>Account Defaults</h2>
   <div class="per_domain_account_defaults">
-
-    [% IF account_defaults.defined('Default')%]
-    <p>[% (account_defaults.Default ? '+' : '-') _ ' Default' %]</p>
-    [% account_defaults.delete('Default') %]
-    [% END %]
 
     [% FOREACH acc IN account_defaults.keys.sort %]
     <p>[% (account_defaults.$acc ? '+' : '-') _ ' ' _ acc %]</p>
