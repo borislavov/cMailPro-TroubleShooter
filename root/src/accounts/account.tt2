@@ -103,6 +103,18 @@
         [% FOR v IN val.size %]
 	[% val.$v _ ',' %]
 	[% END %]
+    [% ELSIF val.keys %]
+       [% FOR k IN val.keys %]
+    { [% k %]:
+       [% IF val.$k.keys %]
+       [% FOR kk IN val.$k.keys%]
+       [% kk %] =&gt; [% val.$k.$kk %],
+       [% END %]
+    }
+       [% ELSE %]
+       =&gt; [% val.$k %] },
+       [% END %]
+       [% END %]
     [% ELSE %]
     [%  val %]
     [% END %]
