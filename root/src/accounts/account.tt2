@@ -49,6 +49,26 @@
     </form>
   </div>
 
+  <h3>Last login</h3>
+  [% IF account_info.LastLogin %]
+  <p>Date: [% account_info.LastLogin %];  IP address: [% account_info.LastAddress %]</p>
+  [% END %]
+
+  [% IF account_info.PrevLogin %]
+  <p>Date: [% account_info.PrevLogin %];  IP address: [% account_info.PrevLoginAddress %] </p>
+  [% END %]
+
+  [% IF NOT account_info.PrevLogin AND NOT account_info.LastLogin %]
+  <p>N/A</p>
+  [% END %]
+
+  <h3>Failed login</h3>
+  [% IF account_info.LastFailedLogin %]
+  <p> Date: [% account_info.LastFailedLogin %]; IP address: [% account_info.LastFailedLoginAddress %]</p>
+  [% ELSE %]
+  <p>N/A</p>
+  [% END %]
+
   <h2>Enabled services</h2>
 
   <div class="account_enabled_services">
@@ -59,68 +79,131 @@
   </div>
   <div class="clear-float" > </div>
 
+  <div class="account-mail-settings">
+    <h2>Mail settings</h2>
+    <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
 
-<h3>Last login</h3>
-[% IF account_info.LastLogin %]
-<p>Date: [% account_info.LastLogin %];  IP address: [% account_info.LastAddress %]</p>
-[% END %]
+    <h3>RPOP</h3>
+    <div class="account-mail-settings-rpop">
+      [% IF mail_rpop.keys %]
+      <table>
+	<thead>
+	  <tr>
+	    <th>Name</th>
+	    <th>Period</th>
+	    <th>Account</th>
+	    <th>Host/Domain</th>
+	    <th>Password</th>
+	    <th>Leave</th>
+	    <th>APOP</th>
+	    <th>TLS</th>
+	    <th>Mailbox</th>
+	  </tr>
+	  <tbody>
+	    [% FOR r IN mail_rpop.keys %]
+	    <tr>
+	      <td>[% r %]</td>
+	      <td>[% mail_rpop.$r.period %] </td>
+	      <td>[% mail_rpop.$r.authName %] </td>
+	      <td>[% mail_rpop.$r.domain %] </td>
+	      <td>[% mail_rpop.$r.password %] </td>
+	      <td>[% mail_rpop.$r.leave ? 'Yes' : 'No' %] </td>
+	      <td>[% mail_rpop.$r.APOP ? 'Yes' : 'No' %] </td>
+	      <td>[% mail_rpop.$r.TLS ? 'Yes' : 'No' %] </td>
+	      <td>[% mail_rpop.$r.mailbox %] </td>
+	    </tr>
+	    [%END%]
+	  </tbody>
+      </table>
+      [% ELSE %]
+      <p>No data</p>
+      [% END %]
+    </div>
+  </div>
 
-[% IF account_info.PrevLogin %]
-<p>Date: [% account_info.PrevLogin %];  IP address: [% account_info.PrevLoginAddress %] </p>
-[% END %]
 
-[% IF NOT account_info.PrevLogin AND NOT account_info.LastLogin %]
-<p>N/A</p>
-[% END %]
+  <div class="account-realtime-settings">
+    <h2>Real-Time settings</h2>
+    <p>RSIP modifications allowed: [% realtime_rsip_mod ? 'Yes' : 'No' %]</p>
 
-<h3>Failed login</h3>
-[% IF account_info.LastFailedLogin %]
-<p> Date: [% account_info.LastFailedLogin %]; IP address: [% account_info.LastFailedLoginAddress %]</p>
-[% ELSE %]
-<p>N/A</p>
-[% END %]
+    <h3>RSIP</h3>
+    <div class="account-realtime-settings-rsip">
+      [% IF realtime_rsip.keys %]
+      <table>
+	<thead>
+	  <tr>
+	    <th>Name</th>
+	    <th>Period</th>
+	    <th>Account</th>
+	    <th>Host/Domain</th>
+	    <th>Authentication name</th>
+	    <th>Password</th>
+	    <th>Target</th>
+	  </tr>
+	  <tbody>
 
-<h2>All (effective) raw settings for account: [% account _ '@' _ domain %]</h2>
+	    [% FOR r IN realtime_rsip.keys %]
+	    <tr>
+	      <td>[% r %]</td>
+	      <td>[% realtime_rsip.$r.period %] </td>
+	      <td>[% realtime_rsip.$r.fromName %] </td>
+	      <td>[% realtime_rsip.$r.domain %] </td>
+	      <td>[% realtime_rsip.$r.authName %] </td>
+	      <td>[% realtime_rsip.$r.password %] </td>
+	      <td>[% realtime_rsip.$r.targetName %] </td>
 
-<table class="account-settings-table" >
-<tbody>
-<tr>
-  <th>
-    Key
-  </th>
-  <th>
-    Value
-  </th>
-</tr>
-[% FOREACH s IN account_settings.keys.sort %]
-<tr>
-  <td>
-    [% s %]
-  </td>
-  <td>
-    [% val = account_settings.$s %]
-    [% IF NOT val.size %]
-        [% FOR v IN val.size %]
-	[% val.$v _ ',' %]
-	[% END %]
-    [% ELSIF val.keys %]
-       [% FOR k IN val.keys %]
-    { [% k %]:
-       [% IF val.$k.keys %]
-       [% FOR kk IN val.$k.keys%]
-       [% kk %] =&gt; [% val.$k.$kk %],
-       [% END %]
-    }
-       [% ELSE %]
-       =&gt; [% val.$k %] },
-       [% END %]
-       [% END %]
-    [% ELSE %]
-    [%  val %]
-    [% END %]
-  </td>
-</tr>
-[% END %]
-</tbody>
-</table>
+	    </tr>
+	    [%END%]
+	  </tbody>
+      </table>
+      [% ELSE %]
+      <p>No data</p>
+      [% END %]
+    </div>
+  </div>
+
+
+  <h2>All (effective) raw settings for account: [% account _ '@' _ domain %]</h2>
+
+  <table class="account-settings-table" >
+    <tbody>
+      <tr>
+	<th>
+	  Key
+	</th>
+	<th>
+	  Value
+	</th>
+      </tr>
+      [% FOREACH s IN account_settings.keys.sort %]
+      <tr>
+	<td>
+	  [% s %]
+	</td>
+	<td>
+	  [% val = account_settings.$s %]
+	  [% IF NOT val.size %]
+          [% FOR v IN val.size %]
+	  [% val.$v _ ',' %]
+	  [% END %]
+	  [% ELSIF val.keys %]
+	  [% FOR k IN val.keys %]
+	  { [% k %]:
+	  [% IF val.$k.keys %]
+	  [% FOR kk IN val.$k.keys%]
+	  [% kk %] =&gt; [% val.$k.$kk %],
+	  [% END %]
+	  }
+	  [% ELSE %]
+	  =&gt; [% val.$k %] },
+	  [% END %]
+	  [% END %]
+	  [% ELSE %]
+	  [%  val %]
+	  [% END %]
+	</td>
+      </tr>
+      [% END %]
+    </tbody>
+  </table>
 </div>

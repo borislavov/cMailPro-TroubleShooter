@@ -218,7 +218,21 @@ p {
     min-height: 25px;
     border:1px solid grey;
     padding:5px 5px 2px 5px;
-    margin:0;
+    margin: 10px 0 0 0;
+}
+
+.domain-settings h3,
+.account-settings h3 {
+    min-height: 18px;
+    padding:2px 2px 0px 2px;
+    font-size: 14px;
+    background-color: #FAFA89;
+    margin: 5px 0 0px 0;
+}
+
+.account-settings table,
+.account-mail-settings table {
+    width: 100%;
 }
 
 

@@ -155,6 +155,38 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     $c->stash->{enabled_services} = $enabled_services;
 
+
+    # Prepare RPOP data
+
+    my $mail_rpop = $account_settings->{RPOP};
+
+    if ($mail_rpop) {
+	for my $m (keys $mail_rpop) {
+	    $mail_rpop->{$m}->{password} = "*****";
+	    $mail_rpop->{$m}->{leave} = $mail_rpop->{$m}->{APOP} ? 1: 0;
+	    $mail_rpop->{$m}->{TLS} = $mail_rpop->{$m}->{APOP} ? 1: 0;
+	    $mail_rpop->{$m}->{APOP} = $mail_rpop->{$m}->{APOP} ? 1 : 0;
+	}
+    }
+
+    $c->stash->{mail_rpop} = $account_settings->{RPOP};
+    $c->stash->{mail_rpop_mod} = ($account_settings->{RPOPAllowed} eq 'YES') ? 1 : 0;
+
+
+    # Prepare RSIP data
+
+    my $realtime_rsip = $account_settings->{RSIP};
+
+    if ($realtime_rsip) {
+	for my $m (keys $realtime_rsip) {
+	    $realtime_rsip->{$m}->{password} = "*****";
+	}
+    }
+
+    $c->stash->{realtime_rsip} = $account_settings->{RSIP};
+    $c->stash->{realtime_rsip_mod} = ($account_settings->{RSIPAllowed} eq 'YES') ? 1 : 0;
+
+
     for my $k (keys $account_settings) {
 	if (ref $account_settings->{$k} eq 'ARRAY') {
 	    $account_settings->{$k} = join (", ",@{$account_settings->{$k}});
