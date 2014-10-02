@@ -214,6 +214,11 @@ p {
 .account-settings h3 {
     margin-top: 25px;
     margin-bottom: 15px;
+    background-color: #ffffaa;
+    min-height: 25px;
+    border:1px solid grey;
+    padding:5px 5px 2px 5px;
+    margin:0;
 }
 
 
