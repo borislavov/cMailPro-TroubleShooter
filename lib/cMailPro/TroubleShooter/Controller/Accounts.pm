@@ -155,6 +155,8 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     $c->stash->{enabled_services} = $enabled_services;
 
+    # Prepare service class
+    $c->stash->{service_class} = $account_settings->{ServiceClass};
 
     # Prepare RPOP data
 
@@ -439,6 +441,17 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
     my $account = $c->request->captures->[2];
     my $domain = $c->request->captures->[1];
 
+    my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+    if (!$cg_cli) {
+	my $cg_err_args = [ { "cg_connection_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+
     if ( $c->request->method eq 'POST') {
 	my $acc_settings = {};
 	my $param_settings = {
@@ -447,7 +460,8 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    city => 'l',
 	    unit => 'ou',
 	    password => 'Password',
-	    account_services => 'AccessModes'
+	    account_services => 'AccessModes',
+	    service_class => 'ServiceClass',
 	};
 
 	foreach my $k (keys $param_settings) {
@@ -477,19 +491,12 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 		 $c->request->param('confirm-password') &&
 		 ($c->request->param('password-confirm') eq $c->request->param('password') ) ) {
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
-	    } elsif ($c->request->param($k) ) {
+	    }  elsif ($k eq 'service_class') {
+		# Must accept empty strings as well i.e. the value for None is ''.
+		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
+	    }  elsif ($c->request->param($k) ) {
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
 	    }
-	}
-
-	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
-
-	if (!$cg_cli) {
-	    my $cg_err_args = [ { "cg_connection_error" => 1,
-				  "cg_cli" => $cg_cli
-				}];
-
-	    $c->detach( "Root", "end", $cg_err_args );
 	}
 
 	$cg_cli->UpdateAccountSettings($account.'@'.$domain, $acc_settings);
@@ -506,8 +513,35 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 
     $c->forward( 'Accounts', 'account', $c->request->args );
 
+    # Prepate account types
     $c->stash->{account_types} =
 	$c->model("CommuniGate::CLI")->account_types();
+
+    # Prepare service classes
+    my $account_settings = $cg_cli->GetAccountEffectiveSettings("$account\@$domain");
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    $c->stash->{service_classes} = [];
+    push $c->stash->{service_classes}, keys %{$account_settings->{ServiceClasses}};
+
+    my $account_defaults = $cg_cli->GetAccountDefaults($domain);
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    push $c->stash->{service_classes}, keys %{$account_defaults->{ServiceClasses}};
 }
 
 =head1 AUTHOR

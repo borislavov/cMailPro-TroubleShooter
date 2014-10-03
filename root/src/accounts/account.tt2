@@ -1,6 +1,7 @@
 <div class="account-settings">
   <h2>Settings for account: [% account _ '@' _ domain %] <span><a class="edit-account-button" href="[% c.uri_for('/accounts/~edit/' _ domain _ '/' _ account); %]">Edit</a></span></h2> 
-  <p>Type: [% acc_type %] </p>
+  <p>Service class: [% service_class ? service_class : 'None' %] </p>
+  <p>Mailbox type: [% acc_type %] </p>
   <p>Created: [% account_info.Created %] </p>
   <p>Real Name: [% account_settings.RealName %]</p>
   <p>State/Province: [% account_settings.st %] </p>

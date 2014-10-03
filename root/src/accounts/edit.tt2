@@ -3,17 +3,19 @@
   <form id="edit-account-form" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
     <div class="edit-account-settings-wrapper">
       <p>
-	<label for="account-type" >Type:</label>
+	<label for="service-class" >Service class:</label>
       </p>
       <p>
-	<select disabled="disabled" id="account-type" name="account-type">
-	  [% account_types.delete('other'); %]
-	  [% FOR at IN account_types.keys %]
-	  <option value="[% at %]" [% acc_type == account_types.$at ? 'selected="selected"' : '' %] > [% account_types.$at %] </option>
+	<select id="service-class" name="service_class">
+	  <option value="" [% service_class  ? '' : 'selected="selected"'  %] >None</option>
+	  [% FOR sc IN service_classes %]
+	  <option value="[% sc %]" [% service_class == sc ? 'selected="selected"' : '' %] > [% sc%] </option>
 	  [% END %]
 	</select>
       </p>
       <div class="clear-float" > </div>
+
+      <p>Mailbox type: [% acc_type %] </p>
       <p>Created: [% account_info.Created %] </p>
       <div class="clear-float" > </div>
       <p><label for="real_name">Real Name:</label></p>
