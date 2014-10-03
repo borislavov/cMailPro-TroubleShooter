@@ -18,6 +18,11 @@ window.addEvent('domready', function() {
 	});
     });
 
+
+    if ($('edit-account-mail-settings')) {
+	mail_archives();
+    }
+
     if ($('edit-account-services') || $('edit-domain-services')) {
 	enabled_services_checkboxes();
     }
@@ -258,5 +263,29 @@ function enabled_services_checkboxes() {
 	    });
 	});
 
+    }
+}
+
+function mail_archives() {
+    if ($('edit-account-mail-settings')) {
+	$('account-mail-archives').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9dwsh]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-archives-set').addEvent('change', function(e) {
+	    var val = $('account-mail-archives-set').get('value');
+	    if (val == 'other') {
+		$('account-mail-archives').set('disabled', null);
+		$('account-mail-archives').set('value', '');
+	    } else {
+		$('account-mail-archives').set('disabled', 'disabled');
+		$('account-mail-archives').set('value', val);
+	    }
+	});
     }
 }

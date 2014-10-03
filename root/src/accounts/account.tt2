@@ -82,6 +82,10 @@
 
   <div class="account-mail-settings">
     <h2>Mail settings</h2>
+    <p>Archive Messages: [% mail_archives ? mail_archives : 'Never' %]</p>
+    <p>
+      (w = week, d = day, h = hour, m = minute, s = second)
+    </p>
     <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
 
     <h3>RPOP</h3>

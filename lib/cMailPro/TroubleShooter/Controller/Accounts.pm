@@ -158,7 +158,7 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     # Prepare service class
     $c->stash->{service_class} = $account_settings->{ServiceClass};
 
-    # Prepare RPOP data
+    # Prepare Mail (RPOP, Archives etc.) data
 
     my $mail_rpop = $account_settings->{RPOP};
 
@@ -173,6 +173,8 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     $c->stash->{mail_rpop} = $account_settings->{RPOP};
     $c->stash->{mail_rpop_mod} = ($account_settings->{RPOPAllowed} eq 'YES') ? 1 : 0;
+
+    $c->stash->{mail_archives} = $account_settings->{ArchiveMessagesAfter};
 
 
     # Prepare RSIP data
@@ -462,6 +464,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    password => 'Password',
 	    account_services => 'AccessModes',
 	    service_class => 'ServiceClass',
+	    mail_archives => 'ArchiveMessagesAfter',
 	};
 
 	foreach my $k (keys $param_settings) {
@@ -494,6 +497,9 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    }  elsif ($k eq 'service_class') {
 		# Must accept empty strings as well i.e. the value for None is ''.
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
+	    }  elsif ($k eq 'mail_archives') {
+		# Must accept empty strings as well i.e. the value for Never is ''.
+		$acc_settings->{$param_settings->{'mail_archives'}} = $c->request->param('mail_archives');
 	    }  elsif ($c->request->param($k) ) {
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
 	    }
