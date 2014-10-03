@@ -102,6 +102,19 @@
       [% END %]
     </div>
 
+    <h3>Member of groups</h3>
+    <div class="account-mail-settings-groups">
+      [% IF mail_groups_member %]
+      <ul>
+	[% FOREACH m IN mail_groups_member %]
+	<li>[% m %]</li>
+	[% END %]
+      </ul>
+      [% ELSE %]
+      <p>Not a member of any group</p>
+      [% END %]
+    </div>
+
     <h3>RPOP</h3>
     <div class="account-mail-settings-rpop">
       [% IF mail_rpop.keys %]

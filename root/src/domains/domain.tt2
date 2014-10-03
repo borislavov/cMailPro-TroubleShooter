@@ -19,6 +19,28 @@
   [% END %]
   <div class="clear-float"> </div>
 
+  <h2>Group list</h2>
+  [% IF mail_groups.size %]
+  [% FOREACH grp IN mail_groups %]
+  <div class="per_domain_group_list">
+    <h3>[% grp.name %]</h3>
+    [% IF grp.members.size %]
+    <p>Members</p>
+    <ul>
+    [% FOREACH member IN grp.members %]
+    <li>[% member %]</li>
+    [% END %]
+    </ul>
+    [% ELSE %]
+    <p>No members</p>
+    [% END %]
+  </div>
+  [% END %]
+  [% ELSE %]
+  <p>No groups</p>
+  [% END %]
+  <div class="clear-float"> </div>
+
   <h2>Account Defaults</h2>
   <div class="per_domain_account_defaults">
 

@@ -173,6 +173,36 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     $c->stash->{mail_aliases} = $mail_aliases;
 
+    # Groups
+    my $group_list = $cg_cli->ListGroups($domain);
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    foreach my $g (@{$group_list}) {
+
+	my $group_settings  = $cg_cli->GetGroup("$g\@$domain");
+
+	if (!$cg_cli->isSuccess) {
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	foreach my $m (@{$group_settings->{Members}}) {
+	    if ($m eq $account) {
+		push @{$c->stash->{mail_groups_member}}, $g;
+	    }
+	}
+    }
+
     # RPOP
 
     my $mail_rpop = $account_settings->{RPOP};
