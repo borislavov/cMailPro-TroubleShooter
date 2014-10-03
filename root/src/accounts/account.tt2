@@ -88,6 +88,20 @@
     </p>
     <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
 
+
+    <h3>Mail aliases</h3>
+    <div class="account-mail-settings-aliases">
+      [% IF mail_aliases %]
+      <ul>
+	[% FOREACH ma IN mail_aliases %]
+	<li>[% ma %]</li>
+	[% END %]
+      </ul>
+      [% ELSE %]
+      <p>No aliases</p>
+      [% END %]
+    </div>
+
     <h3>RPOP</h3>
     <div class="account-mail-settings-rpop">
       [% IF mail_rpop.keys %]

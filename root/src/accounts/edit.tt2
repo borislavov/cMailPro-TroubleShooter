@@ -149,6 +149,21 @@
     </form>
     <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
 
+    <h3>Mail aliases</h3>
+    <div class="account-mail-settings-aliases">
+    <form id="edit-account-mail-aliases" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
+      <ul>
+	[% FOREACH ma IN mail_aliases %]
+	<li><input name="mail_aliases" value="[% ma %]" /></li>
+	[% END %]
+	<li><input name="mail_aliases" value="" /></li>
+      </ul>
+      <p>
+	<input type="submit" value="Save changes" name="save_changes_acc_mail_aliases" />
+      </p>
+    </form>
+    </div>
+
     <h3>RPOP</h3>
     <div class="account-mail-settings-rpop">
       [% IF mail_rpop.keys %]

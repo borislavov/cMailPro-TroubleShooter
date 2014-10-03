@@ -160,6 +160,21 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     # Prepare Mail (RPOP, Archives etc.) data
 
+    # Aliases
+    my $mail_aliases = $cg_cli->GetAccountAliases("$account\@$domain");
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    $c->stash->{mail_aliases} = $mail_aliases;
+
+    # RPOP
+
     my $mail_rpop = $account_settings->{RPOP};
 
     if ($mail_rpop) {
@@ -500,6 +515,9 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    }  elsif ($k eq 'mail_archives') {
 		# Must accept empty strings as well i.e. the value for Never is ''.
 		$acc_settings->{$param_settings->{'mail_archives'}} = $c->request->param('mail_archives');
+	    }  elsif ($k eq 'mail_aliases') {
+		# Processed separately
+		next;
 	    }  elsif ($c->request->param($k) ) {
 		$acc_settings->{$param_settings->{$k}} = $c->request->param($k);
 	    }
@@ -515,6 +533,26 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 
 	    $c->detach( "Root", "end", $cg_err_args );
 	}
+
+	if ($c->request->param('mail_aliases')) {
+	    my $aliases ;
+	    for my $a ($c->request->param('mail_aliases')) {
+		if ($a) {
+		    push @{$aliases}, $a;
+		}
+	    }
+	    $cg_cli->SetAccountAliases($account.'@'.$domain, $aliases);
+
+	    if (!$cg_cli->isSuccess) {
+
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    }
+	}
+
     }
 
     $c->forward( 'Accounts', 'account', $c->request->args );
