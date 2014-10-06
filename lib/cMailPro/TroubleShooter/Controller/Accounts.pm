@@ -160,6 +160,24 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     # Prepare Mail (RPOP, Archives etc.) data
 
+    # Forwarders
+
+    my $mail_forwarders = $cg_cli->FindForwarders("$domain", "$account\@$domain");
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    foreach my $fw (@{$mail_forwarders}) {
+	$fw .= "\@$domain";
+    }
+
+    $c->stash->{mail_forwarders} = $mail_forwarders;
+
     # Aliases
     my $mail_aliases = $cg_cli->GetAccountAliases("$account\@$domain");
 
@@ -616,6 +634,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
     }
 
     push $c->stash->{service_classes}, keys %{$account_defaults->{ServiceClasses}};
+
 }
 
 =head1 AUTHOR

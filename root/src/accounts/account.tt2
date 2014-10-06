@@ -102,6 +102,19 @@
       [% END %]
     </div>
 
+    <h3>Forwarders</h3>
+    <div class="account-mail-settings-forwarders">
+      [% IF mail_forwarders.size %]
+      <ul>
+	[% FOREACH fw IN mail_forwarders %]
+	<li>[% fw %]</li>
+	[% END %]
+      </ul>
+      [% ELSE %]
+      <p>No forwarders</p>
+      [% END %]
+    </div>
+
     <h3>Member of groups</h3>
     <div class="account-mail-settings-groups">
       [% IF mail_groups_member %]

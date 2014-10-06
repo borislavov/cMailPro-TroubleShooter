@@ -40,6 +40,25 @@
   [% END %]
   <div class="clear-float"> </div>
 
+  <h2>Forwarder list</h2>
+  [% IF mail_forwarders.size %]
+  [% FOREACH forwarder IN mail_forwarders %]
+  <div class="per_domain_forwarder_list">
+    <h3>[% forwarder.name %]</h3>
+    [% IF forwarder.to %]
+    <p>To: [% forwarder.to %] </p>
+    [% ELSE %]
+    <p>No address set.</p>
+    [% END %]
+  </div>
+  [% END %]
+  [% ELSE %]
+  <p>No forwarders</p>
+  [% END %]
+  <div class="clear-float"> </div>
+
+
+
   <h2>Account Defaults</h2>
   <div class="per_domain_account_defaults">
 

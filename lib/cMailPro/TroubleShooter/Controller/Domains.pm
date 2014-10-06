@@ -150,6 +150,30 @@ sub domain :LocalRegex("^(?!(~.*$))(.*)") {
 	push @{$c->stash->{mail_groups}}, { name => $g, members => sort ($group_settings->{Members}) } ;
     }
 
+    # Forwarders
+    my $forwarder_list = $cg_cli->ListForwarders($domain);
+
+    if (!$cg_cli->isSuccess) {
+	my $cg_err_args = [ { "cg_command_error" => 1,
+			      "cg_cli" => $cg_cli
+			    }];
+
+	$c->detach( "Root", "end", $cg_err_args );
+    }
+
+    foreach my $f (@{$forwarder_list}) {
+
+	my $forwarder  = $cg_cli->GetForwarder("$f\@$domain");
+
+	if (!$cg_cli->isSuccess) {
+	    my $cg_err_args = [ { "cg_command_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+	push @{$c->stash->{mail_forwarders}}, { name => "$f\@$domain", to => $forwarder } ;
+    }
 
 }
 
