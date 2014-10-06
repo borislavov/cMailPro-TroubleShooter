@@ -601,6 +601,44 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    }
 	}
 
+	if ($c->request->param('mail_forwarder_new')) {
+	    my $fwd = $c->request->param('mail_forwarder_new');
+	    if ($fwd !~ /@/) {
+		$fwd = "$fwd\@$domain";
+	    }
+
+	    $cg_cli->CreateForwarder($fwd, "$account\@$domain");
+
+	    if (!$cg_cli->isSuccess) {
+
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    }
+	}
+
+	if ($c->request->param('mail_forwarders')) {
+	    for my $f ($c->request->param('mail_forwarders')) {
+		if ($f) {
+		    my $fwd = $c->request->param('mail_forwarder_'.$f);
+		    if ($fwd ne $f) {
+			$cg_cli->RenameForwarder($f, $fwd);
+
+			if (!$cg_cli->isSuccess) {
+
+			    my $cg_err_args = [ { "cg_command_error" => 1,
+						  "cg_cli" => $cg_cli
+						}];
+
+			    $c->detach( "Root", "end", $cg_err_args );
+			}
+		    }
+		}
+	    }
+	}
+
     }
 
     $c->forward( 'Accounts', 'account', $c->request->args );

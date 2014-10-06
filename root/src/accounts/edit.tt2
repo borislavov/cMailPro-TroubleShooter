@@ -167,14 +167,28 @@
     <h3>Forwarders</h3>
     <div class="account-mail-settings-forwarders">
       [% IF mail_forwarders.size %]
+      <form id="edit-account-mail-forwarders" method="post" action="[% c.uri_for('/accounts/~edit/'_ domain _ '/' _ account); %]" >
       <ul>
 	[% FOREACH fw IN mail_forwarders %]
-	<li>[% fw %]</li>
+	<li>
+	  <p>
+	    <label for="mail-forwarder_[% fw %]">Rename forwarder </label>
+	    <input id="mail-forwarder-[% fw %]" name="mail_forwarder_[% fw %]" value="[% fw %]" type="text" />
+	    <input name="mail_forwarders" value="[% fw %]" type="hidden" />
+	  </p>
+	</li>
 	[% END %]
       </ul>
       [% ELSE %]
       <p>No forwarders</p>
       [% END %]
+      <p>
+	<label for="mail-forwarder-new">New forwarder</label>
+	<input id="mail-forwarder-new" name="mail_forwarder_new" value="" />
+      </p>
+      <p><input type="submit" name="save_changes_acc_mail_forwarders" value="Save changes" /></p>
+
+      </form>
     </div>
 
     <h3>Member of groups </h3>
