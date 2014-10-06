@@ -308,3 +308,25 @@ p {
     padding: 5px;
     border-bottom: 1px dashed black;
 }
+
+
+.account-mail-settings-rules {
+    margin: 10px 5px 10px 5px;
+
+}
+
+.account-mail-settings-rules h4 {
+    min-height: 18px;
+    padding:2px 2px 0px 2px;
+    font-size: 12px;
+    background-color: #FAFA85;
+    margin: 0;
+    border-bottom: 1px dashed black;
+}
+
+.account-mail-settings-rules h5 {
+    background-color: red;
+    margin: 5px 10px 5px 10px;
+    border-bottom: 1px dashed black;
+    background-color: #FAFA86;
+}

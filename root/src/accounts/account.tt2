@@ -88,6 +88,44 @@
     </p>
     <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
 
+    <h3>Mail rules</h3>
+    <div class="account-mail-settings-rules">
+      [% IF mail_rules.size %]
+	[% FOREACH mr IN mail_rules %]
+      <div class="account-mail-rule">
+	<h4>[% mr.name %]</h4>
+	<div class="account-mail-rule-body">
+	  <p>Priority: [% mr.priority %]</p>
+
+	  <div class="account-mail-rule-rules">
+	  <h5>Rules</h5>
+	  [% IF mr.rules.size %]
+	    [% FOR r IN mr.rules %]
+	    <p>[% r %]</p>
+	    [% END %]
+	    [% ELSE %]
+	    <p>No rules defined</p>
+	    [% END %]
+	  </div>
+
+	  <div class="account-mail-rule-actions">
+	  <h5>Actions</h5>
+	  [% IF mr.actions.size %]
+	  [% FOR a IN mr.actions %]
+	  <p>[% a %]</p>
+	  [% END %]
+	  [% ELSE %]
+	  <p>No actions defined</p>
+	  [% END %]
+	  </div>
+	</div>
+      </div>
+	[% END %]
+      [% ELSE %]
+      <p>No rules</p>
+      [% END %]
+    </div>
+
 
     <h3>Mail aliases</h3>
     <div class="account-mail-settings-aliases">

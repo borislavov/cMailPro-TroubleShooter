@@ -160,6 +160,25 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     # Prepare Mail (RPOP, Archives etc.) data
 
+    # Mail rules
+    my $mail_rules = $cg_cli->GetAccountMailRules("$account\@$domain");
+    foreach my $mr (@{$mail_rules}) {
+	 my $item = { priority => $mr->[0],
+		      name => $mr->[1],
+		      rules => $mr->[2],
+		      actions => $mr->[3] };
+	 $item->{name} =~ s/#//g;
+	 foreach my $r (@{$item->{rules}}) {
+	     $r = join(" ", @$r);
+	 }
+
+	 foreach my $a (@{$item->{actions}}) {
+	     $a = join(" ", @$a);
+	 }
+
+	push @{$c->stash->{mail_rules}}, $item;
+    }
+
     # Forwarders
 
     my $mail_forwarders = $cg_cli->FindForwarders("$domain", "$account\@$domain");
