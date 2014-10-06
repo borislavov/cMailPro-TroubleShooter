@@ -14,6 +14,8 @@ entry sysEntry is
        theSet.status = "500";
      else
         params = newDictionary();
+	params.filter = GetHTTPParameter("filter", 0);
+
         res = HTTPCall("https://127.0.0.1:9100/cgi-bin/cmailpro_ts_api.cgi"+"/"+api_method, params);
         if isNumber(res.responseCode) && res.responseCode == 200 then
            theSet.response = String(res.body);

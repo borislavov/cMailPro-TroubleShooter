@@ -14,7 +14,7 @@ use File::stat;
 use Path::Class;
 use POSIX qw/strftime/;
 
-our $VERSION = '0.6';
+our $VERSION = '0.7';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -66,10 +66,12 @@ sub main {
     } elsif (@captured = $path =~ m/logs\/realtime\/([a-zA-Z0-9]+)(\/)*(seek\/([0-9]+))*$/) {
 	my $topic = $captured[0];
 	my $seek_bytes = $captured[3] || 0;
+	my $filter = $q->param('filter') || undef;
+	$filter =  quotemeta($filter) unless !$filter;
 
 	$topic = 'SystemLogs' unless $topic;
 
-	$render_data = logs_realtime($topic,$seek_bytes);
+	$render_data = logs_realtime($topic, $seek_bytes, $filter);
     }
 
     render($q, $render_data);
@@ -273,6 +275,7 @@ sub logs_count {
 sub logs_realtime {
     my $topic = shift;
     my $seek_bytes = shift || 0;
+    my $filter = shift || undef;
     my $json  = { };
     my @dir;
     my @data;
@@ -300,7 +303,11 @@ sub logs_realtime {
 	    }
 
 	    while (my $line = <$FH>) {
-		push @data, $line;
+		if ($filter && $line =~ m/$filter/ig ) {
+		    push @data, $line;
+		} elsif (!$filter) {
+		    push @data, $line;
+		}
 	    }
 
 	    close($FH);
@@ -313,7 +320,8 @@ sub logs_realtime {
 	    $json = { logs => { realtime => { topic => $topic,
 					      log => $f,
 					      data => \@data,
-					      size => $seek_bytes
+					      size => $seek_bytes,
+					      filter => $filter
 				} } };
 	} else {
 	    $json = { logs => { realtime => "No realtime logs for topic $topic" }  };

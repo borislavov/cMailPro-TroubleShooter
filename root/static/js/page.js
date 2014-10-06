@@ -105,9 +105,14 @@ function xhr_realtime_logs() {
     if ($('realtime-log-wrapper')) {
 	var seek_el = $('realtime-seek');
 	var seek = (parseInt(seek_el.get('value'))) || 0;
+	var filter_el = $('realtime-filter');
+	var filter = $(filter_el).get('value') || null;
+	var data = ( filter ? "filter="+filter : '');
+	var url = window.location.href + ( seek ? '/seek/'+seek : '');
+
 	var xhr = new Request.JSON({
-	    url: window.location.href + ( seek ? '/seek/'+seek : ''),
-	    method: 'get',
+	    url: url,
+	    method: 'post',
 	    onSuccess: function(responseJSON, responseText) {
 		if (!responseJSON) {
 
@@ -148,7 +153,7 @@ function xhr_realtime_logs() {
 	    }
 	});
 
-	xhr.send();
+	xhr.send(data);
     }
 }
 
