@@ -27,7 +27,7 @@ sub index :Path :Args(0) {
     $c->response->redirect( $c->uri_for('/ip_addresses'), 302 );
 }
 
-sub ip_addresses :Regex('^ip_addresses') {
+sub ip_addresses :Regex('^ip_addresses$') {
     my ( $self, $c ) = @_;
 
     $c->stash->{template} = 'ipaddresses/index.tt2';
@@ -154,6 +154,187 @@ sub ip_addresses :Regex('^ip_addresses') {
 
 }
 
+=head2 edit
+
+ Edit CG IP addressess
+
+=cut
+
+sub edit :Regex('^ip_addresses/~edit') {
+    my ( $self, $c ) = @_ ;
+
+    if ( $c->request->method eq 'POST' ) {
+	my $cg_cli = new $c->model("CommuniGate::CLI")->connect();
+
+	if (!$cg_cli) {
+	    my $cg_err_args = [ { "cg_connection_error" => 1,
+				  "cg_cli" => $cg_cli
+				}];
+
+	    $c->detach( "Root", "end", $cg_err_args );
+	}
+
+	my $blacklisted_ips = $c->request->param('blacklisted_ips');
+
+	if ($blacklisted_ips) {
+	    $blacklisted_ips =~ s/\s*;.*//g;
+	    $blacklisted_ips =~ s/^\s+$//g;
+	    $blacklisted_ips =~ s/\s+/ /g;
+	    $blacklisted_ips =~ s/\n/\s/g;
+	    $blacklisted_ips =~ s/\s$//g;
+	    $blacklisted_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetBlacklistedIPs($blacklisted_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $denied_ips = $c->request->param('denied_ips');
+
+	if ($denied_ips) {
+	    $denied_ips =~ s/\s*;.*//g;
+	    $denied_ips =~ s/^\s+$//g;
+	    $denied_ips =~ s/\s+/ /g;
+	    $denied_ips =~ s/\n/\s/g;
+	    $denied_ips =~ s/\s$//g;
+	    $denied_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetDeniedIPs($denied_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $client_ips = $c->request->param('client_ips');
+
+	if ($client_ips) {
+	    $client_ips =~ s/\s*;.*//g;
+	    $client_ips =~ s/^\s+$//g;
+	    $client_ips =~ s/\s+/ /g;
+	    $client_ips =~ s/\n/\s/g;
+	    $client_ips =~ s/\s$//g;
+	    $client_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetClientIPs($client_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $whitehole_ips = $c->request->param('whitehole_ips');
+
+	if ($whitehole_ips) {
+	    $whitehole_ips =~ s/\s*;.*//g;
+	    $whitehole_ips =~ s/^\s+$//g;
+	    $whitehole_ips =~ s/\s+/ /g;
+	    $whitehole_ips =~ s/\n/\s/g;
+	    $whitehole_ips =~ s/\s$//g;
+	    $whitehole_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetWhiteHoleIPs($whitehole_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $nated_ips = $c->request->param('nated_ips');
+
+	if ($nated_ips) {
+
+	    $nated_ips =~ s/\s*;.*//g;
+	    $nated_ips =~ s/^\s+$//g;
+	    $nated_ips =~ s/\s+/ /g;
+	    $nated_ips =~ s/\n/\s/g;
+	    $nated_ips =~ s/\s$//g;
+	    $nated_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetNATedIPs($nated_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $lan_ips = $c->request->param('lan_ips');
+
+	if ($lan_ips) {
+
+	    $lan_ips =~ s/\s*;.*//g;
+	    $lan_ips =~ s/^\s+$//g;
+	    $lan_ips =~ s/\s+/ /g;
+	    $lan_ips =~ s/\n/\s/g;
+	    $lan_ips =~ s/\s$//g;
+	    $lan_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetLANIPs($lan_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+
+	my $debug_ips = $c->request->param('debug_ips');
+
+	if ($debug_ips) {
+
+	    $debug_ips =~ s/\s*;.*//g;
+	    $debug_ips =~ s/^\s+$//g;
+	    $debug_ips =~ s/\s+/ /g;
+	    $debug_ips =~ s/\n/\s/g;
+	    $debug_ips =~ s/\s$//g;
+	    $debug_ips =~ s/ /\\e/g;
+
+	    $cg_cli->SetDebugIPs($debug_ips);
+
+	    if (!$cg_cli->isSuccess) {
+		my $args = [ { "cg_command_error" => 1,
+			       "cg_cli" => $cg_cli
+			     }];
+
+		$c->detach( "Root", "end", $args );
+	    }
+	}
+
+    }
+
+    $c->forward( 'IPAddresses', 'ip_addresses');
+    $c->stash->{template}  = "ipaddresses/edit.tt2";
+}
 
 =head1 AUTHOR
 

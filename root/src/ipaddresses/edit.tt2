@@ -1,0 +1,126 @@
+<div id="tmp_client" class="content-ip-addresses">
+  <h2>Temporary client IP addresses</h2>
+  [% FOR i IN tmp_client_ips %]
+  <p>[% i %]</p>
+  [% END -%]
+</div>
+
+
+<div id="tmp_blacklisted_ips" class="content-ip-addresses">
+  <h2>Temporary blacklisted IP addresses</h2>
+  [% FOR i IN tmp_blacklisted_ips %]
+  <p>[% i %]</p>
+  [% END %]
+</div>
+
+<div id="blacklisted" class="content-ip-addresses">
+  <h2>Blacklisted IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="blacklisted_ips" >
+[%- FOR i IN blacklisted_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="denied" class="content-ip-addresses">
+  <h2>Denied IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="denied_ips">
+[%- FOR i IN denied_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="client" class="content-ip-addresses">
+  <h2>Client IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="client_ips" >
+[%- FOR i IN client_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="whitehole" class="content-ip-addresses">
+  <h2>White hole IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="whitehole_ips">
+[%- FOR i IN whitehole_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="nated" class="content-ip-addresses">
+  <h2>NATed IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="nated_ips" >
+[%- FOR i IN nated_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="lan" class="content-ip-addresses">
+  <h2>LAN IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="lan_ips" >
+[%- FOR i IN lan_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>
+
+<div id="debug" class="content-ip-addresses">
+  <h2>Debug IP addresses</h2>
+  <form method="post" action="[% c.uri_for('/ip_addresses/~edit') %]">
+    <p>
+      <textarea rows="5" cols="80" name="debug_ips">
+[%- FOR i IN debug_ips %]
+[% i %]
+[%- END -%]
+</textarea>
+    </p>
+    <p>
+      <input type="submit" value="Save changes" />
+    </p>
+  </form>
+</div>

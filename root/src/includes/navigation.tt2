@@ -84,6 +84,7 @@
 	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#nated'); %]">NATed IPs</a></li>
 	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#debug'); %]">Debug IPs</a></li>
 	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses#lan'); %]">LAN IPs</a></li>
+	  <li class="navigation-item"><a href="[% c.uri_for('/ip_addresses/~edit'); %]">Edit IPs</a></li>
 	</ul>
       </li>
 
