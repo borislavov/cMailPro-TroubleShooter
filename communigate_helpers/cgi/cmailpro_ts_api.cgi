@@ -345,13 +345,13 @@ sub logs_realtime {
 
 sub logs_search {
     my $search = shift;
-    $search = quotemeta($search) unless !$search;
+    my $quoted_search = quotemeta($search) unless !$search;
 
     my $json  = { };
 
     if ($search) {
 	my @logs;
-	my @files = File::Find::Rule->file->name("*.log")->grep(qr/$search/i)->maxdepth(9999)->in($logs_dir);
+	my @files = File::Find::Rule->file->name("*.log")->grep(qr/$quoted_search/i)->maxdepth(9999)->in($logs_dir);
 
 	if ($files[0]) {
 	    for my $f ( @files ) {
