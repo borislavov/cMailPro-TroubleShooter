@@ -1,0 +1,52 @@
+<div class="logs_search">
+    <form id="logs_search" method="post" action="[% c.uri_for('/logs/~search') %]" >
+      <p>
+	<label for="search-search">Search for search</label>
+      </p>
+      <p>
+	<input id="search-pattern" name="search_pattern" type="text" value="[% search_logs.search OR '' %]" />
+      </p>
+      <p>
+	<input type="submit"  value="Search" />
+      </p>
+
+      <div class="clear-float" > </div>
+
+    </form>
+</div>
+
+[% IF search_logs.logs.size %]
+<p>Results for files matching: [% search_logs.search %]</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>
+	Filtered output for file
+      </th>
+      <th>
+      Full file size
+      </th>
+      <td>
+      Download entire file
+      </td>
+    </tr>
+  </thead>
+  <tbody>
+    [% FOR s IN search_logs.logs %]
+    <tr>
+      <td>
+	<a href="[% c.uri_for('/logs/file/' _ s.log, { 'filter' => search_logs.search} ); %]">[% s.log %]</a>
+      </td>
+      <td>
+      [% size_in_bytes = s.size %]
+      [% PROCESS includes/bytes.tt2 %]
+      </td>
+      <td>
+       <a href="[% c.uri_for('/logs/download/' _ s.log ); %]">download</a>
+      </td>
+    </tr>
+    [% END %]
+  </tbody>
+</table>
+[% END %]

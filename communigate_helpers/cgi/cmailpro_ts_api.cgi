@@ -14,7 +14,7 @@ use File::stat;
 use Path::Class;
 use POSIX qw/strftime/;
 
-our $VERSION = '0.7';
+our $VERSION = '0.8';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -55,8 +55,11 @@ sub main {
 	$render_data = logs_by_topic($topic);
     } elsif (@captured = $path =~ m/logs\/file\/(.*)$/) {
 	my $log = $captured[0];
+	my $filter = $q->param('filter') || undef;
+	$filter =  quotemeta($filter) unless !$filter;
 
-	$render_data = logs_file($log);
+	$render_data = logs_file($log, $filter);
+
     } elsif (@captured = $path =~ m/logs\/count\/(.*)$/) {
 	my $topic = $captured[0];
 
@@ -72,6 +75,10 @@ sub main {
 	$topic = 'SystemLogs' unless $topic;
 
 	$render_data = logs_realtime($topic, $seek_bytes, $filter);
+    } elsif ( @captured = $path =~ m/logs\/search\/(.*)/ ) {
+	my $search = $captured[0];
+
+	$render_data = logs_search($search);
     }
 
     render($q, $render_data);
@@ -225,6 +232,7 @@ sub logs_by_topic {
 # https://IP:port/cgi/this.cgi/logs/file/<filename>
 sub logs_file {
     my $file = shift;
+    my $filter = shift || undef;
     my $json  = { };
 
     my $dir = dirname($file);
@@ -239,6 +247,10 @@ sub logs_file {
     my @file = File::Find::Rule->file()->name($file)->in($dir);
     if ($file[0]) {
 	my @data = read_file($file[0], binmode => ':utf8');
+
+	if ($filter) {
+	    @data = grep { m/$filter/ig } @data
+	}
 
 	$json = { logs => { file => \@data } };
     }
@@ -325,6 +337,30 @@ sub logs_realtime {
 				} } };
 	} else {
 	    $json = { logs => { realtime => "No realtime logs for topic $topic" }  };
+	}
+    }
+
+    return $json;
+}
+
+sub logs_search {
+    my $search = shift;
+    $search = quotemeta($search) unless !$search;
+
+    my $json  = { };
+
+    if ($search) {
+	my @logs;
+	my @files = File::Find::Rule->file->name("*.log")->grep(qr/$search/i)->maxdepth(9999)->in($logs_dir);
+
+	if ($files[0]) {
+	    for my $f ( @files ) {
+		my $stat = stat($f);
+		$f =~ s/$logs_dir//;
+		push @logs, { log => $f, size => $stat->size };
+	    }
+
+	    $json = { logs => { search => { search => $search, logs => \@logs } } };
 	}
     }
 

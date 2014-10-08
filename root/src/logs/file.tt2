@@ -1,4 +1,9 @@
-<p>Filename: <a href="[% c.uri_for('/logs/download/' _ log_file ); %]" title="Download file" > [% log_file %] </a> </p>
+[% IF log_file_filter %]
+<p>Download entire log file: <a href="[% c.uri_for('/logs/download/' _ log_file); %]" title="Download entire log file" > [% log_file %] </a> </p>
+<p>Filter: [% log_file_filter %]</p>
+[% ELSE %]
+<p>Download log file: <a href="[% c.uri_for('/logs/download/' _ log_file); %]" title="Download log file" > [% log_file %] </a> </p>
+[% END %]
 
 [% FOR f IN log_file_contents %] 
   <p>

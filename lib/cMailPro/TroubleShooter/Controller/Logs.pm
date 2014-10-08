@@ -85,12 +85,12 @@ sub topic :LocalRegexp('^(?!(~.*$))topic/(.*)') {
 
 sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
     my ( $self, $c ) = @_;
-
+    my $filter = $c->request->param("filter");
     my $file = $c->request->captures->[2];
     my $rel_path = $c->request->captures->[1];
 
     my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
-    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file);
+    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file. ($filter ? "?filter=".$filter : '') );
 
     if ($file_api && $file_api->{logs}->{file}) {
 	if ($rel_path eq 'download') {
@@ -101,6 +101,7 @@ sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
 	} else {
 	    $c->stash->{log_file_contents} = $file_api->{logs}->{file} ;
 	    $c->stash->{log_file} = $file;
+	    $c->stash->{log_file_filter} = $filter;
 	}
     } else {
 	$c->response->status(404);
@@ -167,6 +168,42 @@ sub realtime_single_topic :LocalRegexp('^(?!(~.*$))realtime/([a-zA-Z0-9]+)(\/)*(
 }
 
 
+=head2 search
+
+  Search in logs
+
+=cut
+
+sub search :LocalRegex('^~search(/)*(.*)') {
+    my ( $self, $c ) = @_;
+
+    my $search = $c->request->captures->[1];
+
+    if ($c->request->method eq "POST") {
+	$search = $c->request->param("search_pattern");
+    }
+
+    if (!$search) {
+	$c->detach( "Root", "end");
+    }
+
+    my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
+    my $search_api = $cg_ts_api->fetch('/logs/search/'. $search);
+
+    if ($search_api && $search_api->{logs}->{search}) {
+        $c->stash->{search_logs} = $search_api->{logs}->{search};
+    } else {
+	$c->response->status(404);
+	$c->stash->{error_msg} = [ "Pattern " . $search." not found" ];
+    }
+
+    if ( $search_api->{error} ) {
+	$c->response->status(500);
+	$c->stash->{error_msg} = [ $search_api->{error} ];
+	$c->stash->{status_msg} = ["Internal Server Error. CGI API communication error."];
+    }
+
+}
 
 =head1 AUTHOR
 
