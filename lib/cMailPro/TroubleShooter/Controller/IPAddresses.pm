@@ -180,7 +180,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $blacklisted_ips =~ s/\s*;.*//g;
 	    $blacklisted_ips =~ s/^\s+$//g;
 	    $blacklisted_ips =~ s/\s+/ /g;
-	    $blacklisted_ips =~ s/\n/\s/g;
+	    $blacklisted_ips =~ s/\n/ /g;
 	    $blacklisted_ips =~ s/\s$//g;
 	    $blacklisted_ips =~ s/ /\\e/g;
 
@@ -202,7 +202,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $denied_ips =~ s/\s*;.*//g;
 	    $denied_ips =~ s/^\s+$//g;
 	    $denied_ips =~ s/\s+/ /g;
-	    $denied_ips =~ s/\n/\s/g;
+	    $denied_ips =~ s/\n/ /g;
 	    $denied_ips =~ s/\s$//g;
 	    $denied_ips =~ s/ /\\e/g;
 
@@ -224,7 +224,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $client_ips =~ s/\s*;.*//g;
 	    $client_ips =~ s/^\s+$//g;
 	    $client_ips =~ s/\s+/ /g;
-	    $client_ips =~ s/\n/\s/g;
+	    $client_ips =~ s/\n/ /g;
 	    $client_ips =~ s/\s$//g;
 	    $client_ips =~ s/ /\\e/g;
 
@@ -246,7 +246,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $whitehole_ips =~ s/\s*;.*//g;
 	    $whitehole_ips =~ s/^\s+$//g;
 	    $whitehole_ips =~ s/\s+/ /g;
-	    $whitehole_ips =~ s/\n/\s/g;
+	    $whitehole_ips =~ s/\n/ /g;
 	    $whitehole_ips =~ s/\s$//g;
 	    $whitehole_ips =~ s/ /\\e/g;
 
@@ -269,7 +269,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $nated_ips =~ s/\s*;.*//g;
 	    $nated_ips =~ s/^\s+$//g;
 	    $nated_ips =~ s/\s+/ /g;
-	    $nated_ips =~ s/\n/\s/g;
+	    $nated_ips =~ s/\n/ /g;
 	    $nated_ips =~ s/\s$//g;
 	    $nated_ips =~ s/ /\\e/g;
 
@@ -292,7 +292,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $lan_ips =~ s/\s*;.*//g;
 	    $lan_ips =~ s/^\s+$//g;
 	    $lan_ips =~ s/\s+/ /g;
-	    $lan_ips =~ s/\n/\s/g;
+	    $lan_ips =~ s/\n/ /g;
 	    $lan_ips =~ s/\s$//g;
 	    $lan_ips =~ s/ /\\e/g;
 
@@ -315,7 +315,7 @@ sub edit :Regex('^ip_addresses/~edit') {
 	    $debug_ips =~ s/\s*;.*//g;
 	    $debug_ips =~ s/^\s+$//g;
 	    $debug_ips =~ s/\s+/ /g;
-	    $debug_ips =~ s/\n/\s/g;
+	    $debug_ips =~ s/\n/ /g;
 	    $debug_ips =~ s/\s$//g;
 	    $debug_ips =~ s/ /\\e/g;
 
