@@ -14,7 +14,7 @@ use File::stat;
 use Path::Class;
 use POSIX qw/strftime/;
 
-our $VERSION = '0.8';
+our $VERSION = '0.9';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -32,8 +32,8 @@ sub main {
     }
 
     my @captured;
-    my $render_data ; 
-    my $path = $q->path_info;
+    my $render_data ;
+    my $path = $q->param("api_method") || $q->path_info ;
 
     if (!$path || $path =~ m/^\/$/) {
 	$render_data = { api => $NAME, api_version => $VERSION }; 

@@ -11,7 +11,7 @@ use base qw(Catalyst::Model Class::Accessor);
 
 __PACKAGE__->mk_accessors(qw|username password url verify_ssl|);
 
-our $VERSION='0.1';
+our $VERSION='0.2';
 
 
 
@@ -49,6 +49,7 @@ sub new {
 sub fetch {
     my $self = shift;
     my $api_method = shift;
+    my $filter = shift;
     my $json = {};
 
     my $ua = new LWP::UserAgent;
@@ -57,7 +58,8 @@ sub fetch {
 
     my $res = $ua->post( $self->url, [ username => $self->username,
 				       password => $self->password,
-				       api_method => $api_method ]);
+				       api_method => $api_method,
+				       filter => $filter]);
 
     if ($res && $res->is_success) {
 	$json = decode_json $res->content;

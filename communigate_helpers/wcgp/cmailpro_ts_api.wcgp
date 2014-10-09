@@ -14,9 +14,12 @@ entry sysEntry is
        theSet.status = "500";
      else
         params = newDictionary();
-	params.filter = GetHTTPParameter("filter", 0);
+	params.body = newDictionary();
+	params.body.filter = GetHTTPParameter("filter", 0);
+	params.body.api_method = api_method;
+	params.method = "POST";
 
-        res = HTTPCall("https://127.0.0.1:9100/cgi-bin/cmailpro_ts_api.cgi"+"/"+api_method, params);
+        res = HTTPCall("https://127.0.0.1:9100/cgi-bin/cmailpro_ts_api.cgi", params);
         if isDictionary(res) && isNumber(res.responseCode) && res.responseCode == 200 then
            theSet.response = String(res.body);
            theSet.status = "200";

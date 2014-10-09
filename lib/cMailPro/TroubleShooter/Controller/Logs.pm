@@ -90,7 +90,7 @@ sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
     my $rel_path = $c->request->captures->[1];
 
     my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
-    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file. ($filter ? "?filter=".$filter : '') );
+    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file, $filter);
 
     if ($file_api && $file_api->{logs}->{file}) {
 	if ($rel_path eq 'download') {
@@ -151,7 +151,7 @@ sub realtime_single_topic :LocalRegexp('^(?!(~.*$))realtime/([a-zA-Z0-9]+)(\/)*(
     my $seek = $c->request->captures->[4];
     my $filter = $c->request->param("filter");
     my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
-    my $rt_api = $cg_ts_api->fetch('/logs/realtime/'. $topic .($seek ? '/seek/'.$seek : '') .( $filter ? "?filter=".$filter: ''));
+    my $rt_api = $cg_ts_api->fetch('/logs/realtime/'. $topic .($seek ? '/seek/'.$seek : ''),  $filter);
 
     if ($rt_api && $rt_api->{logs}->{realtime}) {
         $c->stash->{realtime} = $rt_api->{logs}->{realtime};
