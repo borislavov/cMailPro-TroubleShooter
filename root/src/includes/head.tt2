@@ -6,5 +6,6 @@
 <script type="text/javascript" src="[% c.uri_for('/static/js/mootools-more.js') %]"></script>
 <script type="text/javascript" src="[% c.uri_for('/static/js/mooTree.js') %]"></script>
 <script type="text/javascript" src="[% c.uri_for('/static/js/page.js') %]"></script>
-
-
+[% IF c.debug AND c.config.validate_markup %]
+<script type="text/javascript" src="[% c.uri_for('/static/js/markup_validation.js') %]"></script>
+[% END %]

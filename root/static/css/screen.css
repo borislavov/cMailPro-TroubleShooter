@@ -330,3 +330,19 @@ p {
     border-bottom: 1px dashed black;
     background-color: #FAFA86;
 }
+
+.markup-validation {
+    top: 50px;
+    right: 10px;
+    float:right;
+    width: 232px;
+    height: 25px;
+}
+
+.markup-validation-valid {
+    color: green;
+}
+
+.markup-validation-invalid {
+    color: red;
+}
