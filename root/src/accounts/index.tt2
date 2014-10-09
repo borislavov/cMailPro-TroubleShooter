@@ -1,6 +1,7 @@
 [%# Listing is included in accounts/search.tt2. %]
 [%# Careful with edits and layout. %]
 
+[% IF accounts.size %]
 <table>
   <thead>
     <tr>
@@ -37,3 +38,6 @@
     [% END %]
   </tbody>
 </table>
+[% ELSE %]
+<p>No accounts found.</p>
+[% END %]

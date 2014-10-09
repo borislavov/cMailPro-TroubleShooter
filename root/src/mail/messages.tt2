@@ -1,4 +1,5 @@
 <p>Mail queue</p>
+[% IF messages.size %]
 <table>
 <thead>
   <tr>
@@ -25,6 +26,7 @@
 <tbody>
 
 [% USE DecodeMailHeader %]
+
 
 [% FOR m IN messages %] 
 <tr>
@@ -65,3 +67,6 @@
 [%END%]
 </tbody>
 </table>
+[% ELSE %]
+<p>No messages in the queue</p>
+[% END %]

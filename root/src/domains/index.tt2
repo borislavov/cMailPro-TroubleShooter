@@ -1,6 +1,6 @@
 [%# Listing is included in domains/search.tt2. %]
 [%# Careful with edits and layout. %]
-
+[% IF domains.size %]
 <table>
   <thead>
     <tr>
@@ -25,3 +25,6 @@
     [% END %]
   </tbody>
 </table>
+[% ELSE %]
+<p>No domains found.</p>
+[% END %]
