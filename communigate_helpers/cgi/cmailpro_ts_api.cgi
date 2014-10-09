@@ -25,7 +25,9 @@ sub main {
 
     my $remote_addr = $q->remote_addr();
     if ($remote_addr ne '[127.0.0.1]' && 
-	$remote_addr ne '[77.71.117.10]') {
+	$remote_addr ne '[77.71.117.10]' &&
+	$remote_addr ne '127.0.0.1' &&
+	$remote_addr ne '77.71.117.10') {
 	return;
     }
 
