@@ -160,6 +160,27 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
 
     # Prepare Mail (RPOP, Archives etc.) data
 
+    # Mail limits
+    my $mail_in_flow = $account_settings->{MailInpFlow};
+
+    if (ref $mail_in_flow eq 'ARRAY') {
+	$c->stash->{mail_in_flow} = { messages => $mail_in_flow->[0], period => $mail_in_flow->[1] };
+    } elsif ($mail_in_flow eq 'unlimites') {
+	$c->stash->{mail_in_flow} = { messages => 'unlimited', period => 'unlimited' };
+    }
+
+    my $mail_out_flow = $account_settings->{MailOutFlow};
+
+    if (ref $mail_out_flow eq 'ARRAY') {
+	$c->stash->{mail_out_flow} = { messages => $mail_out_flow->[0], period => $mail_out_flow->[1] };
+    } elsif ($mail_out_flow eq 'unlimited') {
+	$c->stash->{mail_out_flow} = { messages => 'unlimited', period => 'unlimited' };
+    }
+
+    my $msg_out_size = $account_settings->{MaxMailOutSize};
+    my $msg_in_size = $account_settings->{MaxMessageSize};
+    $c->stash->{mail_message_size} = { in => $msg_in_size, out => $msg_out_size };
+
     # Mail rules
     my $mail_rules = $cg_cli->GetAccountMailRules("$account\@$domain");
     foreach my $mr (@{$mail_rules}) {
@@ -547,6 +568,10 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    account_services => 'AccessModes',
 	    service_class => 'ServiceClass',
 	    mail_archives => 'ArchiveMessagesAfter',
+	    mail_limits_in_flow_messages_set => 'MailInpFlow',
+	    mail_limits_out_flow_messages_set => 'MailOutFlow',
+	    mail_limits_size_in_set => 'MaxMessageSize',
+	    mail_limits_size_out_set => 'MaxMailOutSize'
 	};
 
 	foreach my $k (keys $param_settings) {
@@ -582,6 +607,51 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    }  elsif ($k eq 'mail_archives') {
 		# Must accept empty strings as well i.e. the value for Never is ''.
 		$acc_settings->{$param_settings->{'mail_archives'}} = $c->request->param('mail_archives');
+	    }  elsif ($k eq 'mail_limits_size_in_set') {
+		my $s = $c->request->param('mail_limits_size_in_set');
+
+		if ($s eq 'other') {
+		    $s = $c->request->param('mail_limits_size_in');
+		}
+
+		$acc_settings->{$param_settings->{$k}} = $s;
+	    }  elsif ($k eq 'mail_limits_size_out_set') {
+		my $s = $c->request->param('mail_limits_size_out_set');
+
+		if ($s eq 'other') {
+		    $s = $c->request->param('mail_limits_size_out');
+		}
+
+		$acc_settings->{$param_settings->{$k}} = $s;
+
+	    } elsif ($k eq  'mail_limits_in_flow_messages_set') {
+		my $m = $c->req->param('mail_limits_in_flow_messages_set');
+		my $p = $c->req->param('mail_limits_in_flow_period_set');
+
+		if ( $m eq 'other' ) {
+		    $m = $c->req->param('mail_limits_in_flow_messages');
+		}
+
+		if ( $p eq 'other' ) {
+		    $p = $c->req->param('mail_limits_in_flow_period');
+		}
+
+		my $data = [ $m , $p ];
+		$acc_settings->{$param_settings->{$k}} = $data;
+	    } elsif ($k eq  'mail_limits_out_flow_messages_set') {
+		my $m = $c->req->param('mail_limits_out_flow_messages_set');
+		my $p = $c->req->param('mail_limits_out_flow_period_set');
+
+		if ( $m eq 'other' ) {
+		    $m = $c->req->param('mail_limits_out_flow_messages');
+		}
+
+		if ( $p eq 'other' ) {
+		    $p = $c->req->param('mail_limits_out_flow_period');
+		}
+
+		my $data = [ $m , $p ];
+		$acc_settings->{$param_settings->{$k}} = $data;
 	    }  elsif ($k eq 'mail_aliases') {
 		# Processed separately
 		next;

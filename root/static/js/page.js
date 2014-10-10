@@ -23,6 +23,10 @@ window.addEvent('domready', function() {
 	mail_archives();
     }
 
+    if ($('edit-account-mail-limits')) {
+	mail_limits();
+    }
+
     if ($('edit-account-services') ){
 	enabled_services_checkboxes({ services_id: 'edit-account-services',
 				      default_id: 'account_services_default',
@@ -331,5 +335,140 @@ function mail_archives() {
 		$('account-mail-archives').set('value', val);
 	    }
 	});
+    }
+}
+
+function mail_limits() {
+    if ($('edit-account-mail-limits')) {
+	$('account-mail-limits-in-flow-messages').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9dwsh]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-in-flow-period').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9dwsh]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-in-flow-messages-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-in-flow-messages';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
+	$('account-mail-limits-in-flow-period-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-in-flow-period';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
+
+	$('account-mail-limits-out-flow-messages').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9dwsh]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-out-flow-period').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9dwsh]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-out-flow-messages-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-out-flow-messages';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
+	$('account-mail-limits-out-flow-period-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-out-flow-period';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
+
+
+	$('account-mail-limits-size-in').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9KMGT]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-size-in-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-size-in';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
+
+	$('account-mail-limits-size-out').addEvent('keydown', function(e) {
+	    var val = $(this).get('value');
+	    if (!/[0-9KMGT]/i.test(e.key)) {
+		if (e.code != 13) {
+		    e.stop();
+		}
+	    }
+	});
+
+	$('account-mail-limits-size-out-set').addEvent('change', function(e) {
+	    var val = $(this).get('value');
+	    var input = 'account-mail-limits-size-out';
+	    if (val == 'other') {
+		$(input).set('disabled', null);
+		$(input).set('value', '');
+	    } else {
+		$(input).set('disabled', 'disabled');
+		$(input).set('value', val);
+	    }
+	});
+
     }
 }

@@ -82,11 +82,26 @@
 
   <div class="account-mail-settings">
     <h2>Mail settings</h2>
+    <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
+
     <p>Archive Messages: [% mail_archives ? mail_archives : 'Never' %]</p>
     <p>
       (w = week, d = day, h = hour, m = minute, s = second)
     </p>
-    <p>RPOP modifications allowed: [% mail_rpop_mod ? 'Yes' : 'No' %]</p>
+    <h3>Mail limits</h3>
+    <p>Incomming mail: [% mail_in_flow.messages %] messages for [% mail_in_flow.period %] </p>
+    <p>Outgoing mail: [% mail_out_flow.messages %] messages for [% mail_out_flow.period %]</p>
+
+    <p>Incomming message size: [% mail_message_size.in %]</p>
+    <p>Outgoing message size: [% mail_message_size.out %]</p>
+    <p>
+      (w = week, d = day, h = hour, m = minute, s (or missing) = second)
+    </p>
+
+    <p>
+      (M = MB, K = KB)
+    </p>
+
 
     <h3>Mail rules</h3>
     <div class="account-mail-settings-rules">
