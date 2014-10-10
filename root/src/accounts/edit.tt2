@@ -224,7 +224,7 @@
       <p>
 	<label>Period</label>
 	<input id="account-mail-limits-out-flow-period" name="mail_limits_out_flow_period" type="text" disabled="disabled" value="[% mail_out_flow.period %]" />
-	<label for="mail-limits-out-flow-period-set">New value</label>
+	<label for="account-mail-limits-out-flow-period-set">New value</label>
 	<select id="account-mail-limits-out-flow-period-set" name="mail_limits_out_flow_period_set">
 	  <option value="30s">30 sec</option>
 	  <option value="1s">1 sec</option>
@@ -246,7 +246,7 @@
       <h4>Message size</h4>
       <p>
 	<label for="account-mail-limits-size-in">Incomming messages size </label>
-	<input id="account-mail-limits-size-in" type="text" value="[% mail_message_size.in%]" disabled="disabled" name="mail_limits_size_in" id="account-mail-limits-size-in"  />
+	<input id="account-mail-limits-size-in" type="text" value="[% mail_message_size.in%]" disabled="disabled" name="mail_limits_size_in" />
 	<label for="account-mail-limits-size-in-set">New value</label>
 	<select id="account-mail-limits-size-in-set" name="mail_limits_size_in_set">
 	  <option value="100K">100 KB</option>
@@ -354,8 +354,8 @@
 	[% FOREACH fw IN mail_forwarders %]
 	<li>
 	  <p>
-	    <label for="mail-forwarder_[% fw %]">Rename forwarder </label>
-	    <input id="mail-forwarder-[% fw %]" name="mail_forwarder_[% fw %]" value="[% fw %]" type="text" />
+	    <label>Rename forwarder </label>
+	    <input name="mail_forwarder_[% fw %]" value="[% fw %]" type="text" />
 	    <input name="mail_forwarders" value="[% fw %]" type="hidden" />
 	  </p>
 	</li>
@@ -403,6 +403,7 @@
 	    <th>TLS</th>
 	    <th>Mailbox</th>
 	  </tr>
+	  </thead>
 	  <tbody>
 	    [% FOR r IN mail_rpop.keys %]
 	    <tr>
@@ -444,6 +445,7 @@
 	    <th>Password</th>
 	    <th>Target</th>
 	  </tr>
+	  </thead>
 	  <tbody>
 
 	    [% FOR r IN realtime_rsip.keys %]

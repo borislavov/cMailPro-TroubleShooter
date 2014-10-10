@@ -11,10 +11,10 @@
   <div class="account-verify-password-wrapper">
     <form id="account-verify-password-form" method="post" action="[% c.uri_for('/accounts/~verify_password/'_ domain _ '/' _ account); %]" >
       <p>
-	<label for="password">Verify Password</label>
+	<label for="verify-password">Verify Password</label>
       </p>
       <p>
-	<input id="password" name="password" type="password" />
+	<input id="verify-password" name="password" type="password" />
       </p>
       <p>
 	<input type="submit" name="submit" value="Verify" />
@@ -101,7 +101,6 @@
     <p>
       (M = MB, K = KB)
     </p>
-
 
     <h3>Mail rules</h3>
     <div class="account-mail-settings-rules">
@@ -197,6 +196,7 @@
 	    <th>TLS</th>
 	    <th>Mailbox</th>
 	  </tr>
+	  </thead>
 	  <tbody>
 	    [% FOR r IN mail_rpop.keys %]
 	    <tr>
@@ -238,6 +238,7 @@
 	    <th>Password</th>
 	    <th>Target</th>
 	  </tr>
+	  </thead>
 	  <tbody>
 
 	    [% FOR r IN realtime_rsip.keys %]

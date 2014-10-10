@@ -1,7 +1,7 @@
 <h1>[% ( title ? title  _ ":: " : '' ) _  site_title %]</h1>
 [% IF c.debug AND c.config.validate_markup %]
    <span class="markup-validation" >
-   <a id="validate-markup" href="[% c.config.markup_validator_url   _ c.uri_for() %]">Markup validation</a><span id="validation-result"></span>
+   <a id="validate-markup" href="[% c.config.markup_validator_url   _ c.request.uri  %]">Markup validation</a><span id="validation-result"></span>
 </span>
 <span class="clear-float" />
 [% END %]
