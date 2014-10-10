@@ -236,7 +236,8 @@ p {
 }
 
 
-.account_enabled_services,
+.account_defaults_enabled_services,
+.domain_enabled_services,
 .account_enabled_services {
     margin-bottom: 20px;
     min-height: 80px;

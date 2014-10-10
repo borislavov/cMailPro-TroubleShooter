@@ -23,8 +23,33 @@ window.addEvent('domready', function() {
 	mail_archives();
     }
 
-    if ($('edit-account-services') || $('edit-domain-services')) {
-	enabled_services_checkboxes();
+    if ($('edit-account-services') ){
+	enabled_services_checkboxes({ services_id: 'edit-account-services',
+				      default_id: 'account_services_default',
+				      all_id:  'account_services_all',
+				      none_id:  'account_services_none',
+				      checkboxes_class: '.enabled_services_checkboxes'
+				    });
+    }
+
+    if ($('edit-domain-services')) {
+	enabled_services_checkboxes({ services_id: 'edit-domain-services',
+				      default_id: 'domain_services_default',
+				      all_id:  'domain_services_all',
+				      none_id:  'domain_services_none',
+				      checkboxes_class: '.enabled_services_checkboxes'
+				    });
+
+    }
+
+    if ($('edit-account-defaults-services')) {
+	enabled_services_checkboxes({ services_id: 'edit-account-defaults-services',
+				      default_id: 'account_defaults_services_default',
+				      all_id:  'account_defaults_services_all',
+				      none_id:  'account_defaults_services_none',
+				      checkboxes_class: '.accd_enabled_services_checkboxes'
+				    });
+
     }
 
     if ($('account-change-password-form')) {
@@ -214,14 +239,28 @@ function xhr_on_verify_password () {
     }
 }
 
-function enabled_services_checkboxes() {
-    if ($('edit-account-services') || $('edit-domain-services') ) {
-	var default_services = $('account_services_default') || $('domain_services_default');
-	var all_services = $('account_services_all') || $('domain_services_all');
-	var none_services = $('account_services_none') || $('domain_services_none');
+function enabled_services_checkboxes(args) {
+    if (!args) {
+	return null;
+    }
+
+    var services = args.services_id;
+    var dflt = args.default_id;
+    var all = args.all_id;
+    var none = args.none_id;
+    var checkboxes = args.checkboxes_class;
+
+    if (!dflt || !all || !none || !checkboxes ) {
+	return null;
+    }
+
+    if ($(services)) {
+	var default_services = $(dflt);
+	var all_services = $(all);
+	var none_services = $(none);
 
 	$(none_services).addEvent('click', function(e) {
-	    $$('.enabled_services_checkboxes').each(function(item) {
+	    $$(checkboxes).each(function(item) {
 		var id = $(item).get('id');
 		if (/_services_none/i.test(id)) {
 		    return;
@@ -233,7 +272,7 @@ function enabled_services_checkboxes() {
 	});
 
 	$(all_services).addEvent('click', function(e) {
-	    $$('.enabled_services_checkboxes').each(function(item) {
+	    $$(checkboxes).each(function(item) {
 		var id = $(item).get('id');
 		if (/_services_none/i.test(id) ||
 		    /_services_all/i.test(id) ||
@@ -251,7 +290,7 @@ function enabled_services_checkboxes() {
 	});
 
 	$(default_services).addEvent('click', function(e) {
-	    $$('.enabled_services_checkboxes').each(function(item) {
+	    $$(checkboxes).each(function(item) {
 		var id = $(item).get('id');
 		if (/_services_default/i.test(id) ||
 		    /_services_none/i.test(id) ||

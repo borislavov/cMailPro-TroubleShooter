@@ -250,8 +250,9 @@ sub edit :LocalRegex('^~edit(/)*(.*)') {
 
     if ( $c->request->method eq 'POST') {
 	my $domain_settings = {};
+	my $account_defaults = {};
 	my $param_settings = {
-	    account_defaults => 'AccessModes',
+	    account_defaults_services => 'AccessModes',
 	    domain_services => 'DomainAccessModes'
 	};
 
@@ -278,6 +279,27 @@ sub edit :LocalRegex('^~edit(/)*(.*)') {
 		} else {
 		    $domain_settings->{$param_settings->{$k}} = $all_none_default;
 		}
+	    } elsif ($k eq 'account_defaults_services' && $c->request->param($k)) {
+		my $ad_all_none_default = 0;
+		my @ad_services = $c->request->param($k);
+		my $ad_array_size = scalar(@ad_services)-1;
+
+		for my $ad_s (0..$ad_array_size) {
+		    my $ad_srv = $ad_services[$ad_s];
+		    if ($ad_srv eq 'Default' || $ad_srv eq 'All' || $ad_srv eq 'None') {
+			$ad_all_none_default = $ad_srv unless $ad_all_none_default;
+			delete $ad_services[$ad_s];
+		    }
+		}
+
+		if ( !$ad_all_none_default) {
+		    # 27: MobilePronto ; Larger tan 27 are enabled. 27
+		    # is always returned by CG. Hackish!
+		    push @{$account_defaults->{$param_settings->{$k}}}, 27;
+		    push @{$account_defaults->{$param_settings->{$k}}}, $c->request->param('account_defaults_services');
+		} else {
+		    $account_defaults->{$param_settings->{$k}} = $ad_all_none_default;
+		}
 	    }
 	}
 
@@ -291,15 +313,31 @@ sub edit :LocalRegex('^~edit(/)*(.*)') {
 	    $c->detach( "Root", "end", $cg_err_args );
 	}
 
-	$cg_cli->UpdateDomainSettings( domain => $domain, settings => $domain_settings);
+	if ($c->request->param('domain_services') ) {
 
-	 if (!$cg_cli->isSuccess) {
+	    $cg_cli->UpdateDomainSettings( domain => $domain, settings => $domain_settings);
 
-	    my $cg_err_args = [ { "cg_command_error" => 1,
-				  "cg_cli" => $cg_cli
-				}];
+	    if (!$cg_cli->isSuccess) {
 
-	    $c->detach( "Root", "end", $cg_err_args );
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    }
+	}
+
+	if ($c->request->param('account_defaults_services') ) {
+	    $cg_cli->UpdateAccountDefaults( domain => $domain, settings => $account_defaults);
+
+	    if (!$cg_cli->isSuccess) {
+
+		my $cg_err_args = [ { "cg_command_error" => 1,
+				      "cg_cli" => $cg_cli
+				    }];
+
+		$c->detach( "Root", "end", $cg_err_args );
+	    }
 	}
     }
 

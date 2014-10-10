@@ -62,9 +62,35 @@
   <h2>Account Defaults</h2>
   <div class="per_domain_account_defaults">
 
-    [% FOREACH acc IN account_defaults.keys.sort %]
-    <p>[% (account_defaults.$acc ? '+' : '-') _ ' ' _ acc %]</p>
-    [% END %]
+    <form id="edit-account-defaults-services" method="post" action="[% c.uri_for('/domains/~edit/'_ domain); %]" >
+      <div class="account_defaults_enabled_services">
+
+	[% FOREACH e IN account_defaults.keys.sort %]
+	[% en_srv = (account_defaults.$e ? 1 : 0 )%]
+	<p>
+	  <input class="accd_enabled_services_checkboxes" type="checkbox" name="account_defaults_services" value="[% e %]" [% en_srv ? 'checked="checked"' : '' %] />
+	  <label>[% e %]</label>
+	</p>
+	[% END %]
+	<p>
+	  <input class="accd_enabled_services_checkboxes" type="checkbox" name="account_defaults_services" id="account_defaults_services_default"  value="Default" />
+	  <label>Server defaults</label>
+	</p>
+
+	<p>
+	  <input class="accd_enabled_services_checkboxes" type="checkbox" id="account_defaults_services_none" name="account_defaults_services" value="None"/>
+	  <label>None</label>
+	</p>
+	<p>
+	  <input class="accd_enabled_services_checkboxes" type="checkbox" id="account_defaults_services_all" name="account_defaults_services" value="All" />
+	  <label>All</label>
+	</p>
+      </div>
+      <div class="clear-float" > </div>
+      <p>
+	<input type="submit" name="save_changes_account_defaults_services" value="Save changes"  />
+      </p>
+    </form>
   </div>
   <div class="clear-float"> </div>
 
