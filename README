@@ -1,1 +1,163 @@
 Run script/cmailpro_troubleshooter_server.pl to test the application.
+
+== Installation ==
+
+Untar the archive with the source code:
+
+  tar -xjf cMailPro-TroubleShooter-git-master.tar.bz2
+
+Copy the extracted directory somewhere. For example
+
+ mkdir /srv/cmailprpots/
+ cp -a cMailPro-Troubleshooter-git-master /srv/cmailprots/
+
+ or
+
+ mkdir /home/cmailprots
+ cp -a cMailPro-Troubleshooter-git-master /home/cmailprots
+
+Change the permissions of the files, so the web server can access
+them.
+
+ chown www-data:www-data -R  /home/cmailprots/cMailPro-Troubleshooter-git-master
+
+ or
+
+ chown apache:apache -R  /home/cmailprots/cMailPro-Troubleshooter-git-master
+
+Go to the CommuniGate server admin interface, and under "Users ->
+Skins" upload the WCGP wrapper cmailpro_ts_api.wcgp. This file is
+located in the communigate_helpers/wcgp directory.
+
+In the CommuniGate admin interface go to "Settings -> Services ->
+HTTPU" and under "CGI Applications" set the CGI Directory to the
+appropriate location, if it is not already set. For example:
+
+ /var/CommuniGate/cgi
+
+
+From the communigate_helpers/cgi directory in the source code tree,
+copy the cmailpro_ts_api.cgi file to the CommuniGate server in the
+configured directory for CGI Applications. Set the executable flag of
+the script. For example
+
+ scp cmailpro_ts_api.cgi user@communi.gate.ip:/var/CommuniGate/cgi
+ user@communi.gate.ip:# chmod +x /var/CommuniGate/cgi/cmailpro_ts_api.cgi
+
+If necessary edit the CGI file and change directories:
+
+   our $queue_dir = "/var/CommuniGate/Queue/";
+   our $logs_dir = "/var/CommuniGate/SystemLogs/";
+
+Edit the config file cmailpro_troubleshooter.conf:
+
+ emacs /home/cmailprots/cMailPro-Troubleshooter-git-master/cmailpro_troubleshooter.conf
+
+ or
+
+ vi /home/cmailprots/cMailPro-Troubleshooter-git-master/cmailpro_troubleshooter.conf
+
+Set the CommuniGate connection settings in the
+<Model::CommuniGate::CLI> section. For example:
+
+ <Model::CommuniGate::CLI>
+    PeerAddr  192.168.19.22
+    PeerPort  106
+    SecureLogin 1
+    login  user
+    password user_password
+ </Model::CommuniGate::CLI>
+
+The PeerAddr is the IP address of the CommuniGate server.
+
+Set the helper CGI script credentials in the
+<Model::CommuniGate::cMailProTSAPI> section.
+
+For example:
+ <Model::CommuniGate::cMailProTSAPI>
+    username  user
+    password user_password
+    verify_ssl 1
+    url   https://192.168.19.22:9100/sys/cmailpro_ts_api.wcgp
+ </Model::CommuniGate::CLI>
+
+The URL option is the URL to the WCGP wrapper already installed on the
+CommuniGate server.
+
+NOTE: If the server DOES NOT HAVE PROPER SSL CERTIFICATE, set
+verify_ssl to -1 and set the url protocol to http and the port to
+8100. For example:
+
+ <Model::CommuniGate::cMailProTSAPI>
+    username  user
+    password user_password
+    verify_ssl -1
+    url   http://192.168.19.22:8100/sys/cmailpro_ts_api.wcgp
+ </Model::CommuniGate::CLI>
+
+ THIS IS NOT RECOMMENDED. BETTER CONFIGURE YOUR SERVER CERTIFICATE.
+
+
+Apache with mod_perl deployment
+
+Copy the apache_mod_perl_cmailpro-ts.conf file from the deployment
+directory to the Apache web server config directory. For example
+
+  cp deployment/apache_mod_perl_cmailpro-ts.conf /etc/apache2/conf.d/ # Debian
+
+  or
+
+  cp deployment/apache_mod_perl_cmailpro-ts.conf /etc/httpd/conf/ # CentOS
+
+Edit that file and set the paths in the following lines to match the
+paths where the source code was copied:
+
+  PerlSwitches -I/home/cmailpro-ts/cMailPro-TroubleShooter/lib
+  DocumentRoot /home/cmailpro-ts/cMailPro-TroubleShooter/root
+
+If not using Apache HTTP Authorization, remove the following lines:
+
+   AuthType Basic
+   AuthName "cMailPro TroubleShooter Login"
+   # (Following line optional)
+   AuthBasicProvider file
+   AuthUserFile /etc/apache2/htpasswords/cmailprots
+   Require valid-user
+
+If you are using Apache HTTP Authorization, set the appropriate path
+for the AuthUserFile setting, create the file and a user. For example:
+
+  htpasswd -c /etc/apache2/htpasswords/cmailpro user
+
+Restart the web server
+
+ service apache2 restart
+
+ or
+
+ service httpd restart
+
+== Required modules ==
+
+=== Helper CGI Script ===
+
+   CGI
+   JSON
+   File::Find::Rule
+   File::Slurp
+   File::Basename
+   File::stat
+   Path::Class
+   POSIX
+
+=== Catalyst application ====
+
+    CommuniGate's CLI.pm (+ Carp, IO::Socket, Digest::MD5)
+    Catalyst (+ Catalyst modules, Template::Toolkit)
+    Moose
+    Data::Dumper
+    LWP::UserAgent
+    Class::C3::Adopt::NEXT
+    Encode
+    JSON
+
