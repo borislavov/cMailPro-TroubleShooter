@@ -304,7 +304,7 @@ sub reject_all :LocalRegex('^reject_all') {
 		$rejected_message->{rejected} = 1;
 	    }
 
-	    push @$rejected_messages, $rejected_message;
+	    push @{$rejected_messages}, $rejected_message;
 	}
     }
 
@@ -358,7 +358,7 @@ sub release_all :LocalRegex('^release_all') {
 		$released_queue->{released} = 1;
 	    }
 
-	    push @$released_queues, $released_queue;
+	    push @{$released_queues}, $released_queue;
 	}
     }
 

@@ -101,13 +101,13 @@ sub get_enabled_services {
 	    $obj_enabled_services->{@{$raw_services}[$es]} = 1;
 	}
 
-	for my $es (keys $enabled_services) {
+	for my $es (keys %{$enabled_services}) {
 	    if (!$obj_enabled_services->{$es}) {
 		$enabled_services->{$es} = 0;
 	    }
 	}
     } elsif ($raw_services eq 'None') {
-	for my $es (keys $enabled_services) {
+	for my $es (keys %{$enabled_services}) {
 	    $enabled_services->{$es} = 0;
 	}
     }

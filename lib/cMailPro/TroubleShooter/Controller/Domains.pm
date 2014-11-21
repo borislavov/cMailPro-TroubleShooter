@@ -102,7 +102,7 @@ sub domain :LocalRegex("^(?!(~.*$))(.*)") {
 
     $c->stash->{enabled_services} = $enabled_services;
 
-    for my $k (keys $domain_settings) {
+    for my $k (keys %{$domain_settings}) {
 	if (ref $domain_settings->{$k} eq 'ARRAY') {
 	    $domain_settings->{$k} = join (", ",@{$domain_settings->{$k}});
 	}
@@ -256,7 +256,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)') {
 	    domain_services => 'DomainAccessModes'
 	};
 
-	foreach my $k (keys $param_settings) {
+	foreach my $k (keys %{$param_settings}) {
 	    if ($k eq 'domain_services' && $c->request->param($k) ) {
 
 		my $all_none_default = 0;

@@ -38,7 +38,7 @@ sub index :Path :Args(0) {
 	my $size = $count->{logs}->{count}->{size};
 	$total_size += $size;
 	$count = $count->{logs}->{count}->{count};
-	push $overview, { topic => $t, logs => $count, size => $size };
+	push @{$overview}, { topic => $t, logs => $count, size => $size };
 	$total_logs += $count;
 
     }

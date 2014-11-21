@@ -59,11 +59,11 @@ sub index :Path :Args(0) {
 	    $c->detach( "Root", "end", $cg_err_args );
 	}
 
-	foreach my $account (keys $accounts) {
+	foreach my $account (keys %{$accounts}) {
 	    my $acc_type =
 		$c->model("CommuniGate::CLI")->get_account_type($accounts->{$account});
 
-	    push $render_accounts, { "domain" => $domain,
+	    push @{$render_accounts}, { "domain" => $domain,
 				     "account" => $account,
 				     "type"  => $acc_type
 	    };
@@ -266,7 +266,7 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     my $mail_rpop = $account_settings->{RPOP};
 
     if ($mail_rpop) {
-	for my $m (keys $mail_rpop) {
+	for my $m (keys %{$mail_rpop}) {
 	    $mail_rpop->{$m}->{password} = "*****";
 	    $mail_rpop->{$m}->{leave} = $mail_rpop->{$m}->{APOP} ? 1: 0;
 	    $mail_rpop->{$m}->{TLS} = $mail_rpop->{$m}->{APOP} ? 1: 0;
@@ -285,7 +285,7 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     my $realtime_rsip = $account_settings->{RSIP};
 
     if ($realtime_rsip) {
-	for my $m (keys $realtime_rsip) {
+	for my $m (keys %{$realtime_rsip}) {
 	    $realtime_rsip->{$m}->{password} = "*****";
 	}
     }
@@ -294,7 +294,7 @@ sub account :LocalRegex("^(?!(~.*$))(.*)/(.*)") {
     $c->stash->{realtime_rsip_mod} = ($account_settings->{RSIPAllowed} eq 'YES') ? 1 : 0;
 
 
-    for my $k (keys $account_settings) {
+    for my $k (keys %{$account_settings}) {
 	if (ref $account_settings->{$k} eq 'ARRAY') {
 	    $account_settings->{$k} = join (", ",@{$account_settings->{$k}});
 	}
@@ -499,12 +499,12 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 	    $c->detach( "Root", "end", $cg_err_args );
 	}
 
-	foreach my $acc (keys $accounts) {
+	foreach my $acc (keys %{$accounts}) {
 	    my $acc_type =
 		$c->model("CommuniGate::CLI")->get_account_type($accounts->{$acc});
 
 	    if ( !$account ) {
-		push $found, { domain => $domain,
+		push @{$found}, { domain => $domain,
 			       account => $acc,
 			       type => $acc_type };
 		next;
@@ -513,7 +513,7 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 	    if ( !$acc_domain && !$acc_user ) {
 		if ( $domain =~ m/$account/ || $acc =~ m/$account/ ) {
 
-		    push $found, { domain => $domain,
+		    push @{$found}, { domain => $domain,
 				   account => $acc,
 				   type =>  $acc_type
 		    };
@@ -521,7 +521,7 @@ sub search :LocalRegex('^~search(/)*(.*)') {
 	    } elsif ($acc_domain || $acc_user ) {
 		if ( $domain =~ m/$acc_domain/ || 
 		     $acc =~ m/$acc_user/ )  {
-		    push $found, { domain => $domain,
+		    push @{$found}, { domain => $domain,
 				   account => $acc,
 				   type => $acc_type
 		    };
@@ -574,7 +574,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	    mail_limits_size_out_set => 'MaxMailOutSize'
 	};
 
-	foreach my $k (keys $param_settings) {
+	foreach my $k (keys %{$param_settings}) {
 	    if ($k eq 'account_services' && $c->request->param($k) ) {
 
 		my $all_none_default = 0;
@@ -748,7 +748,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
     }
 
     $c->stash->{service_classes} = [];
-    push $c->stash->{service_classes}, keys %{$account_settings->{ServiceClasses}};
+    push @{$c->stash->{service_classes}}, keys %{$account_settings->{ServiceClasses}};
 
     my $account_defaults = $cg_cli->GetAccountDefaults($domain);
 
@@ -760,7 +760,7 @@ sub edit :LocalRegex('^~edit(/)*(.*)/(.*)') {
 	$c->detach( "Root", "end", $cg_err_args );
     }
 
-    push $c->stash->{service_classes}, keys %{$account_defaults->{ServiceClasses}};
+    push @{$c->stash->{service_classes}}, keys %{$account_defaults->{ServiceClasses}};
 
 }
 
