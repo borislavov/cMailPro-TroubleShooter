@@ -14,7 +14,7 @@ use File::stat;
 use Path::Class;
 use POSIX qw/strftime/;
 
-our $VERSION = '0.9';
+our $VERSION = '0.10';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -25,8 +25,10 @@ sub main {
 
     my $remote_addr = $q->remote_addr();
     if ($remote_addr ne '[127.0.0.1]' && 
+	$remote_addr ne '[::1]' &&
 	$remote_addr ne '[77.71.117.10]' &&
 	$remote_addr ne '127.0.0.1' &&
+	$remote_addr ne '::1' &&
 	$remote_addr ne '77.71.117.10') {
 	return;
     }
@@ -132,7 +134,7 @@ sub messages {
     foreach my $f (@files) {
 	my ($from, $to, $subject, $date);
 
-	open (my $FH, "<", $f);
+	open (my $FH, "<:encoding(UTF-8)", $f);
 
 	if ($FH) {
 
