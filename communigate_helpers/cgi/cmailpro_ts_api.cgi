@@ -14,7 +14,7 @@ use File::stat;
 use Path::Class;
 use POSIX qw/strftime/;
 
-our $VERSION = '0.10';
+our $VERSION = '0.11';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -312,6 +312,14 @@ sub logs_realtime {
 	if ($files[0]) {
 	    my $f = $files[0];
 
+	    my $stat = stat($f);
+
+	    if (!$seek_bytes) {
+		# Seek to 2KB before the end of the file. The whole
+		# file is too much.
+		$seek_bytes = $stat->size - 2048;
+	    }
+
 	    open(my $FH, "<:encoding(UTF-8)", $f) || return {};
 
 	    if ($seek_bytes) {
@@ -328,7 +336,7 @@ sub logs_realtime {
 
 	    close($FH);
 
-	    my $stat = stat($f);
+	    $stat = stat($f);
 	    $seek_bytes = $stat->size;
 
 	    $f =~ s/$logs_dir//;
