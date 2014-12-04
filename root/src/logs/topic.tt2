@@ -8,9 +8,6 @@
       <th>
 	Size
       </th>
-      <td>
-      Download
-      </td>
     </tr>
   </thead>
   <tbody>
@@ -22,9 +19,6 @@
       <td>
       [% size_in_bytes = t.size %]
       [% PROCESS includes/bytes.tt2 %]
-      </td>
-      <td>
-       <a href="[% c.uri_for('/logs/download/' _ t.log ); %]">download</a>
       </td>
     </tr>
     [% END %]

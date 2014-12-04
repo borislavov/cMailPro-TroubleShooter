@@ -79,11 +79,11 @@ sub topic :LocalRegexp('^(?!(~.*$))topic/(.*)') {
 
 =head2 file
 
- View and download log files
+ View log files
 
 =cut
 
-sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
+sub file :LocalRegexp("^(?!(~.*$))(file)/(.*)") {
     my ( $self, $c ) = @_;
     my $filter = $c->request->param("filter");
     my $file = $c->request->captures->[2];
@@ -93,16 +93,9 @@ sub file :LocalRegexp("^(?!(~.*$))(file|download)/(.*)") {
     my $file_api = $cg_ts_api->fetch('/logs/file/'. $file, $filter);
 
     if ($file_api && $file_api->{logs}->{file}) {
-	if ($rel_path eq 'download') {
-	    $file =~ s/\//-/g;
-	    $c->res->header('Content-Disposition', qq[attachment; filename="$file"]);
-	    $c->res->content_type('text/plain');
-	    $c->response->body (join("\n", @{$file_api->{logs}->{file}})) ;
-	} else {
-	    $c->stash->{log_file_contents} = $file_api->{logs}->{file} ;
-	    $c->stash->{log_file} = $file;
-	    $c->stash->{log_file_filter} = $filter;
-	}
+	$c->stash->{log_file_contents} = $file_api->{logs}->{file} ;
+	$c->stash->{log_file} = $file;
+	$c->stash->{log_file_filter} = $filter;
     } else {
 	$c->response->status(404);
 	$c->stash->{error_msg} = [ "File " . $file." not found" ];

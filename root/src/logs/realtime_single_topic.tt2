@@ -1,6 +1,6 @@
 
 [% IF realtime.topic %]
-<p>Topic: [% realtime.topic %]; Logfile: [% realtime.log %];  <a href="[% c.uri_for('/logs/download/' _ realtime.log); %]">download</a>; Size: <span id="realtime-size">[% realtime.size %]</span> </p>
+<p>Topic: [% realtime.topic %]; Logfile: [% realtime.log %]; Size: <span id="realtime-size">[% realtime.size %]</span> </p>
 <p><label for="realtime-filter">Filter: </label><input id="realtime-filter" type="text" value="" /></p>
 <p><input id="realtime-refresh" type="hidden" value="19"></p>
 <p><input id="realtime-seek" type="hidden" value="[% realtime.size %]"></p>
