@@ -355,3 +355,12 @@ p {
 #logs_filter > p {
     float: left;
 }
+
+.mail-messages-table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+.mail-messages-table td {
+    word-wrap:break-word;
+}

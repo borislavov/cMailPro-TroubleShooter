@@ -1,6 +1,6 @@
 <p>Mail queue</p>
 [% IF messages.size %]
-<table>
+<table class="mail-messages-table">
 <thead>
   <tr>
     <th>
