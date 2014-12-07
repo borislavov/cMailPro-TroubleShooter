@@ -2,6 +2,19 @@
 <p>Filter: [% log_file_filter %]</p>
 [% END %]
 
+[% IF log_file_pages %]
+   <div class="logs-pages">
+   [% p = 0 %]
+   [% WHILE p < log_file_pages %]
+    <p>
+     <a href="[% c.uri_for( '/logs/file/' _ log_file ) _  '?seek=' _ (log_file_chunks * p) %]">[% p %]</a>
+    </p>
+    [% p = p + 1  %]
+   [% END %]
+ </div> <!-- logs-pages -->
+ <div class="clear-float" > </div>
+[% END %]
+
 [% FOR f IN log_file_contents %] 
   <p>
     [% FILTER html%]	

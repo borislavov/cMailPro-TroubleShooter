@@ -12,9 +12,9 @@ use File::Slurp;
 use File::Basename;
 use File::stat;
 use Path::Class;
-use POSIX qw/strftime/;
+use POSIX qw/strftime ceil/;
 
-our $VERSION = '0.11';
+our $VERSION = '0.12';
 our $NAME = 'cMailPro TroubleShooter CG helper API';
 
 our $queue_dir = "/var/CommuniGate/Queue/";
@@ -60,10 +60,12 @@ sub main {
     } elsif (@captured = $path =~ m/logs\/file\/(.*)$/) {
 	my $log = $captured[0];
 	my $filter = $q->param('filter') || undef;
+	my $seek = $q->param('seek') || undef;
+
 	$filter =  quotemeta($filter) unless !$filter;
+	$seek =  quotemeta($seek) unless !$seek;
 
-	$render_data = logs_file($log, $filter);
-
+	$render_data = logs_file($log, $filter, $seek);
     } elsif (@captured = $path =~ m/logs\/count\/(.*)$/) {
 	my $topic = $captured[0];
 
@@ -237,7 +239,11 @@ sub logs_by_topic {
 sub logs_file {
     my $file = shift;
     my $filter = shift || undef;
+    my $seek_bytes = shift || 0;
     my $json  = { };
+
+    my $read_bytes = 614400; # 600KB
+    my @data;
 
     my $dir = dirname($file);
     $file = basename($file);
@@ -249,14 +255,42 @@ sub logs_file {
     }
 
     my @file = File::Find::Rule->file()->name($file)->in($dir);
-    if ($file[0]) {
-	my @data = read_file($file[0], binmode => ':utf8');
 
-	if ($filter) {
-	    @data = grep { m/$filter/ig } @data
+    if ($file[0]) {
+	my $f = $file[0];
+
+	open(my $FH, "<:encoding(UTF-8)", $f) || return {};
+
+	seek($FH, $seek_bytes, 0);
+	my $bytes;
+
+	# work-around read() has issues with unicode characters and
+	# reads \u0000 garabge.
+	while (my $line = <$FH>) {
+	    if ($filter) {
+		if ($line =~ m/$filter/ig) {
+		    push @data, $line;
+		}
+	    } else {
+		push @data, $line;
+	    }
+
+	    {
+		use bytes;
+		$bytes = length(join("",@data));
+	    }
+
+	    if ($bytes >= $read_bytes) {
+		last;
+	    }
 	}
 
-	$json = { logs => { file => \@data } };
+	close($FH);
+
+	my $stat = stat($f);
+	my $pages = ceil($stat->size / $read_bytes);
+
+	$json = { logs => { file => \@data, pages => $pages, chunks => $read_bytes } };
     }
 
     return $json;

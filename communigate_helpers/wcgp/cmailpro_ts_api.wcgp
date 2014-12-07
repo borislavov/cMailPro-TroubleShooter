@@ -15,6 +15,7 @@ entry sysEntry is
      else
         params = newDictionary();
 	params.body = newDictionary();
+	params.body.seek = GetHTTPParameter("seek", 0);
 	params.body.filter = GetHTTPParameter("filter", 0);
 	params.body.api_method = api_method;
 	params.method = "POST";

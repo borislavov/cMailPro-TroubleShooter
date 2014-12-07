@@ -86,16 +86,20 @@ sub topic :LocalRegexp('^(?!(~.*$))topic/(.*)') {
 sub file :LocalRegexp("^(?!(~.*$))(file)/(.*)") {
     my ( $self, $c ) = @_;
     my $filter = $c->request->param("filter");
+    my $seek = $c->request->param("seek");
+
     my $file = $c->request->captures->[2];
     my $rel_path = $c->request->captures->[1];
 
     my $cg_ts_api = new $c->model('CommuniGate::cMailProTSAPI');
-    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file, $filter);
+    my $file_api = $cg_ts_api->fetch('/logs/file/'. $file, $filter, $seek);
 
     if ($file_api && $file_api->{logs}->{file}) {
 	$c->stash->{log_file_contents} = $file_api->{logs}->{file} ;
 	$c->stash->{log_file} = $file;
 	$c->stash->{log_file_filter} = $filter;
+	$c->stash->{log_file_pages} = $file_api->{logs}->{pages};
+	$c->stash->{log_file_chunks} = $file_api->{logs}->{chunks};
     } else {
 	$c->response->status(404);
 	$c->stash->{error_msg} = [ "File " . $file." not found" ];

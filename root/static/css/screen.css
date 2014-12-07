@@ -347,3 +347,7 @@ p {
 .markup-validation-invalid {
     color: red;
 }
+
+.logs-pages p {
+    float: left;
+}
