@@ -351,3 +351,7 @@ p {
 .logs-pages p {
     float: left;
 }
+
+#logs_filter > p {
+    float: left;
+}

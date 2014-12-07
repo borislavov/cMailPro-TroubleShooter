@@ -1,13 +1,24 @@
-[% IF log_file_filter %]
-<p>Filter: [% log_file_filter %]</p>
-[% END %]
+<form id="logs_filter" method="get" action="[% c.uri_for('/logs/file/' _ log_file ) %]" >
+  <p>
+    <label for="search-search">Log filter</label>
+  </p>
+  <p>
+    <input id="log-filter" name="filter" type="text" value="[% log_file_filter OR '' %]" />
+  </p>
+  <p>
+    <input type="submit"  value="Filter" />
+  </p>
+
+  <div class="clear-float" > </div>
+
+</form>
 
 [% IF log_file_pages %]
    <div class="logs-pages">
    [% p = 0 %]
    [% WHILE p < log_file_pages %]
     <p>
-     <a href="[% c.uri_for( '/logs/file/' _ log_file ) _  '?seek=' _ (log_file_chunks * p) %]">[% p %]</a>
+     <a href="[% c.uri_for( '/logs/file/' _ log_file ) _  '?seek=' _ (log_file_chunks * p) _ ( log_file_filter ? '&filter=' _ log_file_filter : '') %]">[% p %]</a>
     </p>
     [% p = p + 1  %]
    [% END %]
